@@ -1,9 +1,9 @@
 #CLASS
 
-def input_checker(choice_list) :
+def input_checker(choice_list, input_txt) :
     """ That function checks if the user entered a correct input """
-    while True :
-        user_input = input("Entrez le numéro de votre sélection : ")
+    while True :       
+        user_input = input(input_txt)
         try :
             user_input = int(user_input)
         except ValueError :
@@ -14,4 +14,5 @@ def input_checker(choice_list) :
             continue
         else :
             break
+        
     return user_input
