@@ -1,80 +1,72 @@
 import mysql.connector
 from mysql.connector import Error
-
-import os
-
 from data import *
 from code_class import *
+from sql_class import *
 
 cat_list = []
 ing_list = []
+choice_input = ""
+cat_input = ""
+ing_input = ""
 
-os.system('cls')
+# Connexion to MySQL Server
+connection = mysql.connector.connect (
+    host = 'localhost',
+    database = 'testP5',
+    user = dtb_user,
+    password = dtb_password
+    )
+
+if connection.is_connected():
+    cursor = connection.cursor()
+
 # display first request
 for elem in init_choice :
     print(elem)
 
-#################################################
-#################################################
-#################################################
-# Connexion to MySQL Server
-if input_checker(init_choice, init_input_txt) == 1 :
-    try :
-        connection = mysql.connector.connect (
-        host = 'localhost',
-        database = 'testP5',
-        user = 'testeur',
-        password = 'openclassrooms'
-    )
-        
-        if connection.is_connected():
-            cursor = connection.cursor()
+# User choose
+while input_checker(choice_input, init_choice) == False :
+    choice_input = input(init_input_txt)
 
+if choice_input == "1" :
 # First Request - We want to displays categories of ingredients
-        cat_query = ('SELECT * FROM Categories')
-        cursor.execute(cat_query)
+    cat_query = ('SELECT * FROM Categories')
+    cursor.execute(cat_query)
 
-        os.system('cls')
+    # Displaying the categories list
+    print("Voici la liste des catégories :")
+    for (id, categorie) in cursor:
+        print(str(id) + " : " + categorie)
+        cat_list.append(categorie)
 
-# Displaying the list
-        print("Voici la liste des catégories :")
-        for (id, categorie) in cursor:
-            print("{} : {}" .format(id, categorie))
-            cat_list.append(categorie)
-
+    # User chose a category
+    while input_checker(cat_input, cat_list) == False :
+        cat_input = input(cat_input_txt)
         
+    # Second Request - We want to displays ingredients
+    ing_query = (
+        'SELECT Aliments.aliment FROM Aliments '
+        'INNER JOIN Categories '
+        'ON Aliments.aliment_id = Categories.id '
+        'WHERE Categories.id =' 
+        + cat_input + ';'
+        )
+    cursor.execute(ing_query)
 
-        ing_query = (
-            'SELECT Aliments.aliment FROM Aliments INNER JOIN Categories ON Aliments.aliment_id = Categories.id WHERE Categories.id =' + str(input_checker(cat_list, cat_input_txt)) + ';'
-            )
+    # Displays the ingredient list
+    for row in cursor.fetchall():
+       ing_list.append(row[0])
+    for elem in ing_list:
+        print(str(ing_list.index(elem) + 1) + " : " + elem)
 
-        cursor.execute(ing_query)
-        os.system('cls')
-        print("Voici la liste des aliments correspondant à la catégorie TEST :")
-        for (aliment) in cursor:
-            ing_list.append(aliment)
-            print("{} : {}" .format(ing_list.index(aliment) + 1, aliment))
+    # User choose an ingredient
+    while input_checker(ing_input, ing_list) == False :
+        ing_input = input(ing_input_txt)
 
-        
-        input_checker(ing_list, ing_input_txt)
-        print("Vous avez saisi le TEST" )
-        
-            
+    print("Vous avez choisis " + str(ing_list[int(ing_input) - 1]))
 
-
-
-
-
-        cursor.close()
-
-    except Error as e:
-        print("Une erreur est survenue, ", e)
-
-    finally :
-        if (connection.is_connected()):
-            cursor.close()
-            connection.close()
-            print("Fini")        
+    cursor.close()
 
 else :
     print("Le choix numéro 2 !")
