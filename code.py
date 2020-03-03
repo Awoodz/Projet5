@@ -7,9 +7,11 @@ from code_class import *
 
 cat_list = []
 prod_list = []
+prod_id_list = []
 choice_input = ""
 cat_input = ""
 prod_input = ""
+sub_found = False
 
 # Connexion to MySQL Server
 connection = mysql.connector.connect (
@@ -37,9 +39,9 @@ if choice_input == "1" :
 
     # Displaying the categories list
     print("Voici la liste des catégories :")
-    for (id, categorie) in cursor:
-        print(str(id) + " : " + categorie)
-        cat_list.append(categorie)
+    for (id, category) in cursor:
+        print(str(id) + " : " + category)
+        cat_list.append(category)
 
     # User chose a category
     while input_checker(cat_input, cat_list) == False :
@@ -47,9 +49,9 @@ if choice_input == "1" :
         
     # Second Request - We want to display the products
     prod_query = (
-        'SELECT Aliments.aliment FROM Aliments '
+        'SELECT Products.product FROM Products '
         'INNER JOIN Categories '
-        'ON Aliments.aliment_id = Categories.id '
+        'ON Products.category_id = Categories.id '
         'WHERE Categories.id =' 
         + cat_input + ';'
         )
@@ -59,6 +61,19 @@ if choice_input == "1" :
     for row in cursor.fetchall():
        prod_list.append(row[0])
 
+    prod_query = (
+        'SELECT Products.product_id FROM Products '
+        'INNER JOIN Categories '
+        'ON Products.category_id = Categories.id '
+        'WHERE Categories.id =' 
+        + cat_input + ';'
+        )
+    
+    cursor.execute(prod_query)
+
+    for row in cursor.fetchall():
+       prod_id_list.append(row[0])
+    
     for elem in prod_list:
         print(str(prod_list.index(elem) + 1) + " : " + elem)
 
@@ -68,11 +83,11 @@ if choice_input == "1" :
 
     print("Vous avez choisis " + str(prod_list[int(prod_input) - 1]))
 
-
-    prod_request = requests.get("https://fr.openfoodfacts.org/category/" + str(prod_list[int(prod_input) - 1]) + ".json")
+    prod_request = requests.get("https://fr.openfoodfacts.org/category/" + str(cat_list[int(cat_input) - 1]).replace(" ", "-") + ".json")
     prod_data = prod_request.json()
     
-    prod_string = "Petits pois, jeunes carottes et oignons"
+    prod_string = str(prod_id_list[int(prod_input) - 1])
+
     user_prod = Food_name(prod_data, prod_string)
     print(user_prod.name)
     print(user_prod.brand)
@@ -80,19 +95,27 @@ if choice_input == "1" :
     print(user_prod.score)
 
     for dictionary in prod_data["products"] :
-        if dictionary["product_name_fr"] != prod_string :
-            check_string = (dictionary["product_name_fr"])
+        if dictionary["_id"] != prod_string :
+            check_string = (dictionary["_id"])
             check_prod = Food_name(prod_data, check_string)
-            print(check_prod.name)     
-            try :
-                if float(check_prod.score) < float(user_prod.score) :
-                    print("Cet aliment est plus sain")
-                else :
-                    print("Cet aliment n'est pas sain")
-            except :
-                print("pas de score sur cet aliment")
-                pass
+            if sub_found == False :
+                try :
+                    if check_prod.score < user_prod.score :
+                        substitut = Food_name(prod_data, check_string)
+                        sub_found = True
+                except :
+                    pass
+            else :
+                try :
+                    if check_prod.score < substitut.score :
+                        substitut = Food_name(prod_data, check_string)
+                except :
+                    pass
 
+    print(substitut.name)
+    print(substitut.brand)
+    print(substitut.url)
+    print(substitut.score)
+            
 
-else :
-    print("Le choix numéro 2 !")
+            

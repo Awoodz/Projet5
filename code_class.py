@@ -20,11 +20,11 @@ def input_checker(user_input, choice_list) :
 
 class Food_name():
 
-    def __init__(self, ing_data, ing_string):
-        for dictionary in ing_data["products"] :
-            if dictionary["product_name_fr"] == ing_string :
+    def __init__(self, prod_data, prod_string):
+        for dictionary in prod_data["products"] :
+            if dictionary["_id"] == prod_string :
                 try :
-                    self.name = ing_string
+                    self.name = dictionary["product_name_fr"]
                     self.brand = dictionary["brands"]
                     self.url = dictionary["url"]
                     self.score = dictionary["nutriments"]["nutrition-score-fr"]
