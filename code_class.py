@@ -18,4 +18,17 @@ def input_checker(user_input, choice_list) :
 
     return checker
 
+class Food_name():
 
+    def __init__(self, ing_data, ing_string):
+        for dictionary in ing_data["products"] :
+            if dictionary["product_name_fr"] == ing_string :
+                try :
+                    self.name = ing_string
+                    self.brand = dictionary["brands"]
+                    self.url = dictionary["url"]
+                    self.score = dictionary["nutriments"]["nutrition-score-fr"]
+                except AttributeError :
+                    pass
+                except KeyError :
+                    pass
