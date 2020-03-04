@@ -9,3 +9,6 @@ prod_input_txt = "Choisissez un aliment : "
 
 dtb_user = "testeur"
 dtb_password = "openclassrooms"
+
+prod_url = "https://world.openfoodfacts.org/api/v0/product/"
+cat_url = "https://fr.openfoodfacts.org/category/"

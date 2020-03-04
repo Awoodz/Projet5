@@ -1,28 +1,27 @@
 import requests
 import json
 import mysql.connector
-from mysql.connector import Error
 from data import *
-from code_class import *
+from api_class import *
+from sql_class import *
+from helpers import input_checker
 
 cat_list = []
 prod_list = []
 prod_id_list = []
+prod_true_cat = []
 dictionary_list = []
 choice_input = ""
 cat_input = ""
 prod_input = ""
-sub_found = False
 end_search = False
 
-# Connexion to MySQL Server
 connection = mysql.connector.connect (
     host = 'localhost',
-    database = 'testP5',
+    database = 'P5',
     user = dtb_user,
     password = dtb_password
     )
-
 if connection.is_connected():
     cursor = connection.cursor()
 
@@ -41,8 +40,8 @@ if choice_input == "1" :
 
     # Displaying the categories list
     print("Voici la liste des catégories :")
-    for (id, category) in cursor:
-        print(str(id) + " : " + category)
+    for (id_cat, category) in cursor:
+        print(str(id_cat) + " : " + category)
         cat_list.append(category)
 
     # User chose a category
@@ -51,30 +50,19 @@ if choice_input == "1" :
         
     # Second Request - We want to display the products
     prod_query = (
-        'SELECT Products.product FROM Products '
+        'SELECT prod_name, prod_nb, true_cat FROM Products '
         'INNER JOIN Categories '
-        'ON Products.category_id = Categories.id '
-        'WHERE Categories.id =' 
+        'ON Products.cat_id = Categories.id_cat '
+        'WHERE Categories.id_cat =' 
         + cat_input + ';'
         )
     cursor.execute(prod_query)
 
     # Displays the ingredient list
     for row in cursor.fetchall():
-       prod_list.append(row[0])
-
-    prod_query = (
-        'SELECT Products.product_id FROM Products '
-        'INNER JOIN Categories '
-        'ON Products.category_id = Categories.id '
-        'WHERE Categories.id =' 
-        + cat_input + ';'
-        )
-    
-    cursor.execute(prod_query)
-
-    for row in cursor.fetchall():
-       prod_id_list.append(row[0])
+        prod_list.append(row[0])
+        prod_id_list.append(row[1])
+        prod_true_cat.append(row[2])
     
     for elem in prod_list:
         print(str(prod_list.index(elem) + 1) + " : " + elem)
@@ -85,43 +73,22 @@ if choice_input == "1" :
 
     print("Vous avez choisis " + str(prod_list[int(prod_input) - 1]))
 
-    user_request = requests.get("https://world.openfoodfacts.org/api/v0/product/" + str(prod_id_list[int(prod_input) - 1]) + ".json")
-    user_data = user_request.json()
+    user_data = Api.request(prod_url, list = prod_id_list, input = prod_input)
 
-    user_prod = Product_attribute(user_data)
+    user_prod = Api(user_data)
     
-    cat_request = requests.get("https://fr.openfoodfacts.org/category/" + str(cat_list[int(cat_input) - 1]).replace(" ", "-") + ".json")
-    cat_data = cat_request.json()
+    substitut = user_prod
+    
+    cat_data = Api.request(cat_url, list = prod_true_cat, input = prod_input)
 
     for dictionary in cat_data["products"] :
         dictionary_list.append(dictionary["_id"])
 
     while end_search != True :
-        for elem in dictionary_list :
-            prod_request = requests.get("https://world.openfoodfacts.org/api/v0/product/" + str(elem) + ".json")
-            prod_data = prod_request.json()
-            check_prod = Product_attribute(prod_data)
-            if sub_found == False :
-                try :
-                    if check_prod.score < user_prod.score :
-                        substitut = Product_attribute(prod_data)
-                        sub_found = True
-                except :
-                    pass
-            else :
-                try :
-                    if check_prod.score < substitut.score :
-                        substitut = Product_attribute(prod_data)
-                except :
-                    pass
 
-        print("Le substitut trouvé est : " + substitut.name)
-        if substitut.store != "" :
-            print("Trouvable chez " + substitut.store)
-        else :
-            print("Malheureusement, aucun magasin n'a été renseigné")
-        print(substitut.url)
-        print("Source : OpenFoodFacts.org")
+        substitut = Api.sub_seek(dictionary_list, user_prod)
+
+        Api.answer(substitut)
 
         for elem in end_1_choice :
             print(elem)
