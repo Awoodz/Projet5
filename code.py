@@ -8,10 +8,12 @@ from code_class import *
 cat_list = []
 prod_list = []
 prod_id_list = []
+dictionary_list = []
 choice_input = ""
 cat_input = ""
 prod_input = ""
 sub_found = False
+end_search = False
 
 # Connexion to MySQL Server
 connection = mysql.connector.connect (
@@ -83,39 +85,63 @@ if choice_input == "1" :
 
     print("Vous avez choisis " + str(prod_list[int(prod_input) - 1]))
 
-    prod_request = requests.get("https://fr.openfoodfacts.org/category/" + str(cat_list[int(cat_input) - 1]).replace(" ", "-") + ".json")
-    prod_data = prod_request.json()
+    user_request = requests.get("https://world.openfoodfacts.org/api/v0/product/" + str(prod_id_list[int(prod_input) - 1]) + ".json")
+    user_data = user_request.json()
+
+    user_prod = Product_attribute(user_data)
     
-    prod_string = str(prod_id_list[int(prod_input) - 1])
+    cat_request = requests.get("https://fr.openfoodfacts.org/category/" + str(cat_list[int(cat_input) - 1]).replace(" ", "-") + ".json")
+    cat_data = cat_request.json()
 
-    user_prod = Food_name(prod_data, prod_string)
-    print(user_prod.name)
-    print(user_prod.brand)
-    print(user_prod.url)
-    print(user_prod.score)
+    for dictionary in cat_data["products"] :
+        dictionary_list.append(dictionary["_id"])
 
-    for dictionary in prod_data["products"] :
-        if dictionary["_id"] != prod_string :
-            check_string = (dictionary["_id"])
-            check_prod = Food_name(prod_data, check_string)
+    while end_search != True :
+        for elem in dictionary_list :
+            prod_request = requests.get("https://world.openfoodfacts.org/api/v0/product/" + str(elem) + ".json")
+            prod_data = prod_request.json()
+            check_prod = Product_attribute(prod_data)
             if sub_found == False :
                 try :
                     if check_prod.score < user_prod.score :
-                        substitut = Food_name(prod_data, check_string)
+                        substitut = Product_attribute(prod_data)
                         sub_found = True
                 except :
                     pass
             else :
                 try :
                     if check_prod.score < substitut.score :
-                        substitut = Food_name(prod_data, check_string)
+                        substitut = Product_attribute(prod_data)
                 except :
                     pass
 
-    print(substitut.name)
-    print(substitut.brand)
-    print(substitut.url)
-    print(substitut.score)
+        print("Le substitut trouvé est : " + substitut.name)
+        if substitut.store != "" :
+            print("Trouvable chez " + substitut.store)
+        else :
+            print("Malheureusement, aucun magasin n'a été renseigné")
+        print(substitut.url)
+        print("Source : OpenFoodFacts.org")
+
+        for elem in end_1_choice :
+            print(elem)
+
+        end_1_input = ""
+
+        while input_checker(end_1_input, end_1_choice) == False :
+            end_1_input = input(init_input_txt)
+
+        if end_1_input == "1" :
+            del dictionary_list[dictionary_list.index(substitut.code)]
+            substitut = user_prod
+            continue
+        elif end_1_input == "2" :
+            print("Enregistrement du substitut")
+            end_search = True
+        else :
+            end_search = True
+
+    print("Terminé !")
             
 
             

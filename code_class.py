@@ -15,20 +15,23 @@ def input_checker(user_input, choice_list) :
             pass
         else :
             print("Ce n'est pas un chiffre !")
-
     return checker
 
-class Food_name():
+class Product_attribute():
 
-    def __init__(self, prod_data, prod_string):
-        for dictionary in prod_data["products"] :
-            if dictionary["_id"] == prod_string :
-                try :
-                    self.name = dictionary["product_name_fr"]
-                    self.brand = dictionary["brands"]
-                    self.url = dictionary["url"]
-                    self.score = dictionary["nutriments"]["nutrition-score-fr"]
-                except AttributeError :
-                    pass
-                except KeyError :
-                    pass
+    def __init__(self, prod_data):
+        try :
+            self.name = prod_data["product"]["product_name_fr"]
+            self.sugar = prod_data["product"]["nutriments"]["sugars_100g"]
+            self.fat = prod_data["product"]["nutriments"]["fat_100g"]
+            self.salt = prod_data["product"]["nutriments"]["salt_100g"]
+            self.url = ("https://fr.openfoodfacts.org/produit/" + prod_data["code"])
+            self.store = prod_data["product"]["stores"]
+            self.score = (self.sugar + self.fat + self.salt) / 3
+            self.code = prod_data["code"]
+        except AttributeError :
+            pass
+        except KeyError :
+            pass
+
+        
