@@ -46,13 +46,18 @@ class Api():
                         substitut = Api(prod_data)
                 except :
                     pass
+        if sub_found == False :
+            substitut = user_prod
         return substitut
         
-    def answer(substitut) :
-        print("Le substitut trouvé est : " + substitut.name)
-        if substitut.store != "" :
-            print("Trouvable chez " + substitut.store)
+    def answer(substitut, user_prod) :
+        if substitut == user_prod :
+            print("Le produit sélectionné est déjà le plus sain !")
         else :
-            print("Malheureusement, aucun magasin n'a été renseigné")
-        print(substitut.url)
-        print("Source : OpenFoodFacts.org")
+            print("Le substitut trouvé est : " + substitut.name)
+            if substitut.store != "" :
+                print("Trouvable chez " + substitut.store)
+            else :
+                print("Malheureusement, aucun magasin n'a été renseigné")
+            print(substitut.url)
+            print("Source : OpenFoodFacts.org")

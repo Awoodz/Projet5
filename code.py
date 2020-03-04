@@ -76,9 +76,7 @@ if choice_input == "1" :
     user_data = Api.request(prod_url, list = prod_id_list, input = prod_input)
 
     user_prod = Api(user_data)
-    
-    substitut = user_prod
-    
+        
     cat_data = Api.request(cat_url, list = prod_true_cat, input = prod_input)
 
     for dictionary in cat_data["products"] :
@@ -88,7 +86,10 @@ if choice_input == "1" :
 
         substitut = Api.sub_seek(dictionary_list, user_prod)
 
-        Api.answer(substitut)
+        Api.answer(substitut, user_prod)
+
+        if substitut == user_prod :
+            break
 
         for elem in end_1_choice :
             print(elem)
