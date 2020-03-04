@@ -10,3 +10,4 @@ class Sql():
             'WHERE Categories.id_cat =' 
             + cat_input + ';'
         )
+        return query
