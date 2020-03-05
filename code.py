@@ -67,7 +67,8 @@ if choice_input == "1" :
         prod_input = input(prod_input_txt)
 
     # Remind the user what he picked
-    print("Vous avez choisis " + str(prod_list[int(prod_input) - 1]))
+    picked_prod = str(prod_list[int(prod_input) - 1])
+    print("Vous avez choisis " + picked_prod)
 
     # API Request about picked products
     user_data = Api.request(prod_url, list = prod_id_list, input = prod_input)
@@ -86,13 +87,13 @@ if choice_input == "1" :
     while end_search != True :
 
         # Searching the healthier substitude, put it in a class
-        substitut = Api.sub_seek(dictionary_list, user_prod)
+        sub = Api.sub_seek(dictionary_list, user_prod)
 
         # Displaying informations about the substitute
-        Api.answer(substitut, user_prod)
+        Api.answer(sub, user_prod)
 
         # If picked product has no substitute (it is the best), end the loop
-        if substitut == user_prod :
+        if sub == user_prod :
             break
         
         # Displaying possible user's actions (re-search, save, quit)
@@ -108,18 +109,23 @@ if choice_input == "1" :
 
         # if user wants to re-search, restart the loop
         if end_1_input == "1" :
-            del dictionary_list[dictionary_list.index(substitut.code)]
-            substitut = user_prod
+            del dictionary_list[dictionary_list.index(sub.code)]
+            sub = user_prod
             continue
         # elif user wants to save, save the substitute datas in database, then quits
         elif end_1_input == "2" :
-            print("Enregistrement du substitut")
+            try :
+                Sql.save_query(sub.name, sub.store, sub.url, picked_prod, cursor, connection)
+            except :
+                pass
             end_search = True
         # else quits the program
         else :
             end_search = True
 
     print("Terminé !")
+    cursor.close()
+    connection.close()
             
 
             

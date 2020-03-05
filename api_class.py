@@ -24,11 +24,10 @@ class Api():
             user_request = requests.get(url + str(list[int(input) - 1]) + ".json")
         else :
             user_request = requests.get(url + str(other) + ".json")
-
         return user_request.json()
 
     def sub_seek(dictionary_list, user_prod):
-        global substitut
+        global sub
         sub_found = False
         for elem in dictionary_list :
             prod_data = Api.request(prod_url, other = elem)
@@ -36,19 +35,19 @@ class Api():
             if sub_found == False :
                 try :
                     if check_prod.score < user_prod.score :
-                        substitut = Api(prod_data)
+                        sub = Api(prod_data)
                         sub_found = True
                 except :
                     pass
             else :
                 try :
-                    if check_prod.score < substitut.score :
-                        substitut = Api(prod_data)
+                    if check_prod.score < sub.score :
+                        sub = Api(prod_data)
                 except :
                     pass
         if sub_found == False :
-            substitut = user_prod
-        return substitut
+            sub = user_prod
+        return sub
         
     def answer(substitut, user_prod) :
         if substitut == user_prod :

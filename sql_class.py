@@ -11,3 +11,12 @@ class Sql():
             + cat_input + ';'
         )
         return query
+
+    def save_query(name, store, url, sub_to, cursor, connection):
+        if store == "" :
+            store = "Non renseigné"
+        query = ("INSERT IGNORE INTO saved_data "
+            "(saved_name, saved_store, saved_url, sub_to) "
+            "VALUES (%s, %s, %s, %s);")
+        cursor.execute(query, (name, store, url, sub_to,))
+        connection.commit()
