@@ -11,7 +11,7 @@ class Sql():
             'INNER JOIN Categories '
             'ON Products.cat_id = Categories.id_cat '
             'WHERE Categories.id_cat =' 
-            + cat_input + ';'
+            + cat_input + ' AND is_sub = 0;'
         )
         return query
 
@@ -36,10 +36,8 @@ class Sql():
 
     def call_query(username):
         """This function calls back saved substituts"""
-        print(username)
-        print(type(username))
         # We look for products that are substituts and already searched by user
         query = (
-            "SELECT * FROM Products WHERE user = '" + username + "' AND sub_to = 1;"
-        )
+            "SELECT prod_name, prod_stores, prod_url, sub_to FROM Products WHERE user = '" + username + "';"
+            )
         return query

@@ -1,7 +1,8 @@
 # User's first choice list
 init_choice = [
     "1 - Trouver un substitut à un produit",
-     "2 - Retrouver mes aliments substitués"
+     "2 - Retrouver mes aliments substitués",
+     "3 - Quitter l'application"
      ]
 
 # User's final choice list in case "find a substitut"
@@ -26,3 +27,5 @@ prod_url = "https://fr.openfoodfacts.org/api/v0/product/"
 
 # Typical category url on openfoodfacts.org
 cat_url = "https://fr.openfoodfacts.org/category/"
+
+array_columns = ["Nom", "Magasin", "Url", "Substitut de"]

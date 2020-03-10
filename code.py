@@ -116,17 +116,24 @@ def first_choice(username, cursor, connection):
 def second_choice(username, cursor, connection):
     """This function contains what is happening if user choose second choice"""
     saved_list = []
+    row_list = []
 
     cursor.execute(Sql.call_query(username))
-    
+
     for row in cursor.fetchall():
-        saved_list.append(row[0])
+        row_list = []
+        index = 0
+        while index != 4 :
+            row_list.append(row[index])
+            index = index + 1
+        saved_list.append(row_list)
 
-    # for (id_cat, category) in cursor:
-    #     print(str(id_cat) + " : " + category)
-    #     cat_list.append(category)
-
-    print(saved_list)
+    if saved_list == [] :
+        print("Aucun substitut sauvegardé pour cet utilisateur")
+    else :
+        sub_array = pandas.DataFrame(saved_list, columns = array_columns)
+        print(sub_array)
+        print("Source : OpenFoodFacts.org")
 
 def main() :
 
@@ -143,22 +150,25 @@ def main() :
     choice_input = ""
 
     # Ask the user a "login"
-    username = input("Qui utilise le programme ? : ")
+    username = input("Entrez un nom d'utilisateur (facultatif) : ")
+    
+    while choice_input !=3 :
 
-    # Displaying choices to user - What he want to do.
-    for elem in init_choice :
-        print(elem)
+        choice_input = ""
+        # Displaying choices to user - What he want to do.
+        for elem in init_choice :
+            print(elem)
 
-    # User makes a choice
-    while input_checker(choice_input, init_choice) == False :
-        choice_input = input(init_input_txt)
+        # User makes a choice
+        while input_checker(choice_input, init_choice) == False :
+            choice_input = input(init_input_txt)
 
-    if choice_input == "1" :
-        first_choice(username, cursor, connection)
-    elif choice_input == "2" :
-        second_choice(username, cursor, connection)
-    else :
-        exit()
+        if choice_input == "1" :
+            first_choice(username, cursor, connection)
+        elif choice_input == "2" :
+            second_choice(username, cursor, connection)
+        else :
+            exit()
 
 main()
 
