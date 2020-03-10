@@ -15,17 +15,31 @@ class Sql():
         )
         return query
 
-    def save_query(name, store, url, sub_to, cursor, connection):
+    def save_query(cat_id, name, store, url, sub_to, nb, true_cat, username, cursor, connection):
         """This function insert results into saved_data table"""
+        # If name field is empty
+        if name == "" :
+            # Tell the user there was no datas
+            name = "Non renseigné"
         # If store field is empty
         if store == "" :
             # Tell the user there was no datas
             store = "Non renseigné"
         # Insert query
-        query = ("INSERT IGNORE INTO saved_data "
-            "(saved_name, saved_store, saved_url, sub_to) "
-            "VALUES (%s, %s, %s, %s);")
+        query = ("INSERT IGNORE INTO products "
+            "(cat_id, prod_name, prod_stores, prod_url, sub_to, prod_nb, is_sub, true_cat, user) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);")
         # This format avoid tuples conflict
-        cursor.execute(query, (name, store, url, sub_to,))
+        cursor.execute(query, (cat_id, name, store, url, sub_to, nb, 1, true_cat, username))
         # Without this, nothing is pushed in table
         connection.commit()
+
+    def call_query(username):
+        """This function calls back saved substituts"""
+        print(username)
+        print(type(username))
+        # We look for products that are substituts and already searched by user
+        query = (
+            "SELECT * FROM Products WHERE user = '" + username + "' AND sub_to = 1;"
+        )
+        return query

@@ -1,49 +1,35 @@
 import requests
 import json
 import mysql.connector
+import pandas
 from data import *
 from api_class import *
 from sql_class import *
 from helpers import input_checker
 
-cat_list = []
-prod_list = []
-prod_id_list = []
-prod_true_cat = []
-dictionary_list = []
-choice_input = ""
-cat_input = ""
-prod_input = ""
-end_search = False
+def first_choice(username, cursor, connection):
+    """This function contains what is happening if user choose first choice"""
+    cat_list = []
+    prod_list = []
+    prod_id_list = []
+    prod_true_cat = []
+    dictionary_list = []
+    cat_input = ""
+    prod_input = ""
+    end_search = False
 
-# Connection to SQL database
-connection = mysql.connector.connect (
-    host = 'localhost',
-    database = 'P5',
-    user = dtb_user,
-    password = dtb_password
-    )
-if connection.is_connected():
-    cursor = connection.cursor()
-
-# Displaying choices to user - What he want to do.
-for elem in init_choice :
-    print(elem)
-
-# User makes a choice
-while input_checker(choice_input, init_choice) == False :
-    choice_input = input(init_input_txt)
-
-if choice_input == "1" :
     # Searching categories in database
-    cat_query = ('SELECT * FROM Categories')
+    cat_query = ('SELECT DISTINCT category FROM Categories')
     cursor.execute(cat_query)
+
+    # Appending lists with datas from database
+    for row in cursor.fetchall():
+        cat_list.append(row[0])
 
     # Displaying the category list
     print("Voici la liste des catégories :")
-    for (id_cat, category) in cursor:
-        print(str(id_cat) + " : " + category)
-        cat_list.append(category)
+    for elem in cat_list:
+        print(str(cat_list.index(elem) + 1) + " : " + elem)
 
     # User pick a category
     while input_checker(cat_input, cat_list) == False :
@@ -115,7 +101,7 @@ if choice_input == "1" :
         # elif user wants to save, save the substitute datas in database, then quits
         elif end_1_input == "2" :
             try :
-                Sql.save_query(sub.name, sub.store, sub.url, picked_prod, cursor, connection)
+                Sql.save_query(cat_input, sub.name, sub.store, sub.url, picked_prod, sub.code, prod_true_cat[int(prod_input) - 1], username, cursor, connection)
             except :
                 pass
             end_search = True
@@ -126,6 +112,56 @@ if choice_input == "1" :
     print("Terminé !")
     cursor.close()
     connection.close()
+
+def second_choice(username, cursor, connection):
+    """This function contains what is happening if user choose second choice"""
+    saved_list = []
+
+    cursor.execute(Sql.call_query(username))
+    
+    for row in cursor.fetchall():
+        saved_list.append(row[0])
+
+    # for (id_cat, category) in cursor:
+    #     print(str(id_cat) + " : " + category)
+    #     cat_list.append(category)
+
+    print(saved_list)
+
+def main() :
+
+    # Connection to SQL database
+    connection = mysql.connector.connect (
+        host = 'localhost',
+        database = 'P5',
+        user = dtb_user,
+        password = dtb_password
+        )
+    if connection.is_connected():
+        cursor = connection.cursor()
+
+    choice_input = ""
+
+    # Ask the user a "login"
+    username = input("Qui utilise le programme ? : ")
+
+    # Displaying choices to user - What he want to do.
+    for elem in init_choice :
+        print(elem)
+
+    # User makes a choice
+    while input_checker(choice_input, init_choice) == False :
+        choice_input = input(init_input_txt)
+
+    if choice_input == "1" :
+        first_choice(username, cursor, connection)
+    elif choice_input == "2" :
+        second_choice(username, cursor, connection)
+    else :
+        exit()
+
+main()
+
             
 
             

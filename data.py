@@ -22,7 +22,7 @@ dtb_user = "testeur"
 dtb_password = "openclassrooms"
 
 # Typical product url on openfoodfacts.org
-prod_url = "https://world.openfoodfacts.org/api/v0/product/"
+prod_url = "https://fr.openfoodfacts.org/api/v0/product/"
 
 # Typical category url on openfoodfacts.org
 cat_url = "https://fr.openfoodfacts.org/category/"
