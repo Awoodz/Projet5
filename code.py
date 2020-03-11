@@ -109,10 +109,6 @@ def first_choice(username, cursor, connection):
         else :
             end_search = True
 
-    print("Terminé !")
-    cursor.close()
-    connection.close()
-
 def second_choice(username, cursor, connection):
     """This function contains what is happening if user choose second choice"""
     saved_list = []
@@ -137,15 +133,24 @@ def second_choice(username, cursor, connection):
 
 def main() :
 
-    # Connection to SQL database
-    connection = mysql.connector.connect (
-        host = 'localhost',
-        database = 'P5',
-        user = dtb_user,
-        password = dtb_password
-        )
-    if connection.is_connected():
-        cursor = connection.cursor()
+    connection_checker = False
+    while connection_checker == False :
+        # Connection to SQL database
+        try :
+            connection = mysql.connector.connect (
+                host = 'localhost',
+                database = 'P5',
+                user = 'testeur',
+                password = 'openclassrooms',
+                charset = 'utf8mb4',
+                use_unicode = True
+                )
+            if connection.is_connected():
+                cursor = connection.cursor()
+                connection_checker = True
+        # if fail, the database may not exists, the code will create it
+        except :
+            Sql.database_creation()
 
     choice_input = ""
 

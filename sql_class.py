@@ -41,3 +41,37 @@ class Sql():
             "SELECT prod_name, prod_stores, prod_url, sub_to FROM Products WHERE user = '" + username + "';"
             )
         return query
+
+    def database_creation():
+        """That function create database"""
+        print("Il semble que la base de donnée n'ait pas été créée")
+        # asks for the password of mysql root user
+        user_pass = input("Veuillez saisir le mot de passe de votre root : ")
+        # connect to mysql as root
+        connection = mysql.connector.connect(
+            user = 'root',
+            password = user_pass,
+            host = 'localhost',
+            charset = 'utf8mb4',
+            use_unicode = True,
+            )
+        if connection.is_connected():
+            cursor = connection.cursor()
+
+        # Read the *.sql file
+        read_file = open("sauvegardeP5.sql", 'r', encoding = 'utf8')
+        sql_file = read_file.read()
+        print(sql_file)
+        # Close it
+        read_file.close()
+        # Split the file at each ";" so we got a list that contains full queries
+        sql_query = sql_file.split(';')
+        
+
+        # for each query in the queries list
+        for query in sql_query:
+            try:
+                # execute the query
+                cursor.execute(query)
+            except :
+                pass

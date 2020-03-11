@@ -9,7 +9,7 @@ init_choice = [
 end_1_choice = [
     "1 - Trouver un autre substitut à cet aliment",
     "2 - Sauvegarder cet aliment",
-    "3 - Quitter le programme"
+    "3 - Retourner au menu principal"
     ]
 
 # Tell the user he got to make a choice
