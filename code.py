@@ -2,6 +2,7 @@ import requests
 import json
 import mysql.connector
 import pandas
+import os
 from data import *
 from api_class import *
 from sql_class import *
@@ -27,6 +28,7 @@ def first_choice(username, cursor, connection):
         cat_list.append(row[0])
 
     # Displaying the category list
+    os.system('cls')
     print("Voici la liste des catégories :")
     for elem in cat_list:
         print(str(cat_list.index(elem) + 1) + " : " + elem)
@@ -45,6 +47,8 @@ def first_choice(username, cursor, connection):
         prod_true_cat.append(row[2])
     
     # Displaying the product list
+    os.system('cls')
+    print("Voici la liste des produits : ")
     for elem in prod_list:
         print(str(prod_list.index(elem) + 1) + " : " + elem)
 
@@ -53,6 +57,7 @@ def first_choice(username, cursor, connection):
         prod_input = input(prod_input_txt)
 
     # Remind the user what he picked
+    os.system('cls')
     picked_prod = str(prod_list[int(prod_input) - 1])
     print("Vous avez choisis " + picked_prod)
 
@@ -116,20 +121,29 @@ def second_choice(username, cursor, connection):
 
     cursor.execute(Sql.call_query(username))
 
+    # Appending list with datas from database
     for row in cursor.fetchall():
         row_list = []
         index = 0
+        # Used while to avoid repetitions
         while index != 4 :
             row_list.append(row[index])
             index = index + 1
         saved_list.append(row_list)
 
+    # If user never saved any substitute
     if saved_list == [] :
+        os.system('cls')
         print("Aucun substitut sauvegardé pour cet utilisateur")
+    # Else, displays the substitute in an array
     else :
+        os.system('cls')
+        print("Voici vos substituts sauvegardés : ")
         sub_array = pandas.DataFrame(saved_list, columns = array_columns)
         print(sub_array)
         print("Source : OpenFoodFacts.org")
+    
+    input("Appuyez sur Entrée pour retourner au menu principal")
 
 def main() :
 
@@ -152,13 +166,17 @@ def main() :
         except :
             Sql.database_creation()
 
+    os.system('cls')
+
     choice_input = ""
 
     # Ask the user a "login"
     username = input("Entrez un nom d'utilisateur (facultatif) : ")
+
+    os.system('cls')
     
     while choice_input !=3 :
-
+        print("Que voulez vous faire ?")
         choice_input = ""
         # Displaying choices to user - What he want to do.
         for elem in init_choice :
@@ -168,11 +186,17 @@ def main() :
         while input_checker(choice_input, init_choice) == False :
             choice_input = input(init_input_txt)
 
+        # If user wants to look for a substitute
         if choice_input == "1" :
             first_choice(username, cursor, connection)
+            os.system('cls')
+        # If user wants to look for his saved substitutes
         elif choice_input == "2" :
             second_choice(username, cursor, connection)
+            os.system('cls')
+        # If user wants to leave the program
         else :
+            os.system('cls')
             exit()
 
 main()

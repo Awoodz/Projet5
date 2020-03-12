@@ -1,4 +1,5 @@
 import mysql.connector
+import getpass
 
 class Sql():
     """This class contains all that concerns API queries"""
@@ -46,7 +47,7 @@ class Sql():
         """That function create database"""
         print("Il semble que la base de donnée n'ait pas été créée")
         # asks for the password of mysql root user
-        user_pass = input("Veuillez saisir le mot de passe de votre root : ")
+        user_pass = getpass.getpass("Saisissez le mot de passe de votre root : ")
         # connect to mysql as root
         connection = mysql.connector.connect(
             user = 'root',
@@ -61,7 +62,6 @@ class Sql():
         # Read the *.sql file
         read_file = open("sauvegardeP5.sql", 'r', encoding = 'utf8')
         sql_file = read_file.read()
-        print(sql_file)
         # Close it
         read_file.close()
         # Split the file at each ";" so we got a list that contains full queries
