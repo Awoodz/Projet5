@@ -1,6 +1,10 @@
 import json
 import requests
-from data import *
+
+import sys
+sys.path.insert(1, '/..')
+
+from DATAS.data import *
 
 class Api():
     """This class contains all that concerns API requests or results"""

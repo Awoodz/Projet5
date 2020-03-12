@@ -16,8 +16,13 @@ class Sql():
         )
         return query
 
-    def save_query(cat_id, name, store, url, sub_to, nb, true_cat, username, cursor, connection):
+    def save_query(cat_id, name, store, url, sub_to, nb, true_cat, cursor, connection, username):
         """This function insert results into saved_data table"""
+        # First, we add username in Users table if he doesn't exist
+        query1 = (
+            "INSERT IGNORE INTO Users (user_name) VALUES ('" + username + "');"
+        )
+        cursor.execute(query1)
         # If name field is empty
         if name == "" :
             # Tell the user there was no datas
@@ -27,19 +32,37 @@ class Sql():
             # Tell the user there was no datas
             store = "Non renseigné"
         # Insert query
-        query = ("INSERT IGNORE INTO products "
-            "(cat_id, prod_name, prod_stores, prod_url, sub_to, prod_nb, is_sub, true_cat, user) "
-            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);")
+        query = ("INSERT IGNORE INTO Products "
+            "(cat_id, prod_name, prod_stores, prod_url, sub_to, prod_nb, is_sub, true_cat) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s);")
         # This format avoid tuples conflict
-        cursor.execute(query, (cat_id, name, store, url, sub_to, nb, 1, true_cat, username))
+        cursor.execute(query, (cat_id, name, store, url, sub_to, nb, 1, true_cat))
         # Without this, nothing is pushed in table
         connection.commit()
+        # Last we fill Subs table with our datas
+        query3 = (
+            "INSERT IGNORE INTO Subs (prod_id, user_id) "
+            "SELECT Products.id_prod, Users.id_user "
+            "FROM Products, Users "
+            "WHERE "
+            "Products.prod_name = '" + name + "' "
+            "AND "
+            "Users.user_name = '" + username + "';"
+        )
+        cursor.execute(query3)
+        # Without this, nothing is pushed in table
+        connection.commit()
+
+
 
     def call_query(username):
         """This function calls back saved substituts"""
         # We look for products that are substituts and already searched by user
         query = (
-            "SELECT prod_name, prod_stores, prod_url, sub_to FROM Products WHERE user = '" + username + "';"
+            "SELECT DISTINCT prod_name, prod_stores, prod_url, sub_to FROM Products "
+            "INNER JOIN Subs ON Subs.prod_id = Products.id_prod "
+            "INNER JOIN Users ON Users.id_user = Subs.user_id "
+            "WHERE Users.user_name = '" + username + "';"
             )
         return query
 
@@ -60,7 +83,7 @@ class Sql():
             cursor = connection.cursor()
 
         # Read the *.sql file
-        read_file = open("sauvegardeP5.sql", 'r', encoding = 'utf8')
+        read_file = open("SQL/sqlP5.sql", 'r', encoding = 'utf8')
         sql_file = read_file.read()
         # Close it
         read_file.close()
