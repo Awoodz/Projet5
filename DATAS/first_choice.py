@@ -105,6 +105,7 @@ def first_choice(username, cursor, connection):
         if end_1_input == "1" :
             del dictionary_list[dictionary_list.index(sub.code)]
             sub = user_prod
+            os.system('cls')
             continue
         # elif user wants to save, save the substitute datas in database, then quits
         elif end_1_input == "2" :
@@ -112,6 +113,7 @@ def first_choice(username, cursor, connection):
                 Sql.save_query(cat_input, sub.name, sub.store, sub.url, picked_prod, sub.code, prod_true_cat[int(prod_input) - 1], cursor, connection, username)
             except :
                 pass
+            os.system('cls')
             end_search = True
         # else quits the program
         else :
