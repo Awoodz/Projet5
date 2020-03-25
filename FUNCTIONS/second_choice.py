@@ -1,4 +1,3 @@
-import mysql.connector
 import pandas
 import os
 
@@ -6,12 +5,13 @@ import sys
 sys.path.insert(1, '/..')
 
 from DATAS.data import *
-from DATAS.helpers import *
-from API.api_class import *
+from FUNCTIONS.helpers import *
 from SQL.sql_class import *
+
 
 def second_choice(username, cursor, connection):
     """This function contains what is happening if user choose second choice"""
+
     saved_list = []
     row_list = []
 
@@ -22,21 +22,22 @@ def second_choice(username, cursor, connection):
         row_list = []
         index = 0
         # Used while to avoid repetitions
-        while index != 4 :
+        while index != 4:
             row_list.append(row[index])
             index = index + 1
         saved_list.append(row_list)
 
     # If user never saved any substitute
-    if saved_list == [] :
+    if saved_list == []:
         os.system('cls')
-        print("Aucun substitut sauvegardé pour cet utilisateur")
+        print(no_user_sub_txt)
     # Else, displays the substitute in an array
-    else :
+    else:
         os.system('cls')
-        print("Voici vos substituts sauvegardés : ")
-        sub_array = pandas.DataFrame(saved_list, columns = array_columns)
+        print(saved_sub_txt)
+        sub_array = pandas.DataFrame(saved_list, columns=array_columns)
         print(sub_array)
-        print("Source : OpenFoodFacts.org")
-    
-    input("Appuyez sur Entrée pour retourner au menu principal")
+        print(license_txt)
+
+    # Press "enter" bring back to main
+    input(back_to_main_txt)

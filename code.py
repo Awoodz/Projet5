@@ -1,32 +1,33 @@
 import mysql.connector
-import pandas
 import os
 from DATAS.data import *
-from DATAS.first_choice import *
-from DATAS.second_choice import *
-from DATAS.helpers import input_checker
+from FUNCTIONS.first_choice import first_choice
+from FUNCTIONS.second_choice import second_choice
+from FUNCTIONS.helpers import input_checker
 from API.api_class import *
 from SQL.sql_class import *
 
-def main() :
+
+def main():
+    """Execute the program"""
 
     connection_checker = False
-    while connection_checker == False :
+    while connection_checker == False:
         # Connection to SQL database
-        try :
-            connection = mysql.connector.connect (
-                host = 'localhost',
-                database = 'P5',
-                user = 'testeur',
-                password = 'openclassrooms',
-                charset = 'utf8mb4',
-                use_unicode = True
+        try:
+            connection = mysql.connector.connect(
+                host=db_host,
+                database=db_database,
+                user=db_user,
+                password=db_password,
+                charset=db_charset,
+                use_unicode=True
                 )
             if connection.is_connected():
                 cursor = connection.cursor()
                 connection_checker = True
         # if fail, the database may not exists, the code will create it
-        except :
+        except:
             Sql.database_creation()
 
     os.system('cls')
@@ -34,38 +35,36 @@ def main() :
     choice_input = ""
 
     # Ask the user a "login"
-    username = input("Entrez un nom d'utilisateur (facultatif) : ")
+    username = input(username_req_txt)
     if username == "":
-        username = "all"
+        username = default_username
 
     os.system('cls')
-    
-    while choice_input !=3 :
-        print("Que voulez vous faire ?")
+
+    while choice_input != 3:
+        print(main_req_txt)
+        # Set/reset choice_input to "" to avoid loop
         choice_input = ""
         # Displaying choices to user - What he want to do.
-        for elem in init_choice :
+        for elem in init_choice:
             print(elem)
 
         # User makes a choice
-        while input_checker(choice_input, init_choice) == False :
+        while input_checker(choice_input, init_choice) == False:
             choice_input = input(init_input_txt)
 
         # If user wants to look for a substitute
-        if choice_input == "1" :
+        if choice_input == "1":
             first_choice(username, cursor, connection)
             os.system('cls')
         # If user wants to look for his saved substitutes
-        elif choice_input == "2" :
+        elif choice_input == "2":
             second_choice(username, cursor, connection)
             os.system('cls')
         # If user wants to leave the program
-        else :
+        else:
             os.system('cls')
             exit()
 
+
 main()
-
-            
-
-            
