@@ -12,7 +12,7 @@ def __main__():
     """Execute the program"""
 
     connection_checker = False
-    while connection_checker == False:
+    while not connection_checker :
         # Connection to SQL database
         try:
             connection = mysql.connector.connect(
@@ -22,7 +22,7 @@ def __main__():
                 password=db_password,
                 charset=db_charset,
                 use_unicode=True
-                )
+            )
             if connection.is_connected():
                 cursor = connection.cursor()
                 connection_checker = True
@@ -50,7 +50,7 @@ def __main__():
             print(elem)
 
         # User makes a choice
-        while input_checker(choice_input, init_choice) == False:
+        while not input_checker(choice_input, init_choice):
             choice_input = input(init_input_txt)
 
         # If user wants to look for a substitute

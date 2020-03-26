@@ -35,7 +35,7 @@ def first_choice(username, cursor, connection):
         print(str(cat_list.index(elem) + 1) + " : " + elem)
 
     # User pick a category
-    while input_checker(cat_input, cat_list) == False:
+    while not input_checker(cat_input, cat_list):
         cat_input = input(cat_input_txt)
 
     # Searching products affiliated to categories in database
@@ -54,7 +54,7 @@ def first_choice(username, cursor, connection):
         print(str(prod_list.index(elem) + 1) + " : " + elem)
 
     # User pick a product
-    while input_checker(prod_input, prod_list) == False:
+    while not input_checker(prod_input, prod_list):
         prod_input = input(prod_input_txt)
 
     # Remind the user what he picked
@@ -77,7 +77,7 @@ def first_choice(username, cursor, connection):
 
     # Start the loop, as long as user wants to check
     # others substitutes for the product he picked
-    while end_search != True:
+    while not end_search:
 
         # Searching the healthier substitude, put it in a class
         sub = Api.sub_seek(dictionary_list, user_prod)
@@ -97,7 +97,7 @@ def first_choice(username, cursor, connection):
         end_1_input = ""
 
         # user makes a choice
-        while input_checker(end_1_input, end_1_choice) == False:
+        while not input_checker(end_1_input, end_1_choice):
             end_1_input = input(init_input_txt)
 
         # if user wants to re-search, restart the loop
