@@ -8,7 +8,7 @@ from API.api_class import *
 from SQL.sql_class import *
 
 
-def main():
+def __main__():
     """Execute the program"""
 
     connection_checker = False
@@ -67,4 +67,4 @@ def main():
             exit()
 
 
-main()
+__main__()
