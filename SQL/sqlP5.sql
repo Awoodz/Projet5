@@ -16,11 +16,11 @@ INSERT IGNORE INTO `P5`.`Categories` (`id_cat`, `category`) VALUES (3, 'Produits
 CREATE TABLE IF NOT EXISTS `P5`.`Products` (
   `id_prod` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `cat_id` INT UNSIGNED NOT NULL,
-  `prod_name` VARCHAR(30) CHARACTER SET 'utf8mb4' NOT NULL,
+  `prod_name` VARCHAR(50) CHARACTER SET 'utf8mb4' NOT NULL,
   `prod_nb` VARCHAR(15) NOT NULL,
   `prod_stores` VARCHAR(45) CHARACTER SET 'utf8mb4' NULL,
   `prod_url` VARCHAR(100) NOT NULL,
-  `sub_to` VARCHAR(30) NULL,
+  `sub_to` VARCHAR(50) NULL,
   `true_cat` VARCHAR(45) NOT NULL,
   `is_sub` SMALLINT(1) UNSIGNED NOT NULL,
   UNIQUE INDEX `id_prod_UNIQUE` (`id_prod` ASC) VISIBLE,
