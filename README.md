@@ -7,6 +7,7 @@
 # Comment l'installer ?
   * Téléchargez le repository et décompressez le au chemin de votre choix
   * Assurez vous d'avoir une version récente de Python ( https://www.python.org/downloads/release )(programme developpé sous Python3.7.4)
+  * Assurez vous également d'avoir une version récente de MySQL Server
   * Installez les modules contenus dans le requirements.txt
   
 # Comment l'utiliser ?
