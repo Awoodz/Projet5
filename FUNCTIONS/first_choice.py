@@ -3,9 +3,9 @@ import sys
 sys.path.insert(1, '/..')
 
 from DATAS.data import *
-from FUNCTIONS.helpers import *
-from API.api_class import *
-from SQL.sql_class import *
+from FUNCTIONS.helpers import input_checker
+from API.api_class import Api
+from SQL.sql_class import Sql
 
 
 def first_choice(username, cursor, connection):

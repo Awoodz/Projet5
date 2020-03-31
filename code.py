@@ -4,8 +4,8 @@ from DATAS.data import *
 from FUNCTIONS.first_choice import first_choice
 from FUNCTIONS.second_choice import second_choice
 from FUNCTIONS.helpers import input_checker
-from API.api_class import *
-from SQL.sql_class import *
+from API.api_class import Api
+from SQL.sql_class import Sql
 
 
 def __main__():
@@ -30,7 +30,7 @@ def __main__():
         except:
             Sql.database_creation()
 
-    os.system('cls')
+    # os.system('cls')
 
     choice_input = ""
 

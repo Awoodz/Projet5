@@ -1,76 +1,61 @@
-SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+CREATE DATABASE IF NOT EXISTS `P5` DEFAULT CHARACTER SET utf8mb4;
 
-CREATE DATABASE IF NOT EXISTS `P5`CHARACTER SET `utf8mb4`;
-
-CREATE TABLE IF NOT EXISTS `P5`.`Categories` (
-  `id_cat` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `category` VARCHAR(45) CHARACTER SET 'utf8' NOT NULL,
-  PRIMARY KEY (`id_cat`),
-  UNIQUE INDEX `id_cat_UNIQUE` (`id_cat` ASC) VISIBLE)
+CREATE TABLE IF NOT EXISTS `P5`.`Category` (
+  `idCategory` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nameCat` VARCHAR(50) CHARACTER SET 'utf8mb4' NOT NULL,
+  PRIMARY KEY (`idCategory`),
+  UNIQUE INDEX `idCategory_UNIQUE` (`idCategory` ASC) VISIBLE,
+  UNIQUE INDEX `nameCat_UNIQUE` (`nameCat` ASC) VISIBLE)
 ENGINE = InnoDB;
 
-INSERT IGNORE INTO `P5`.`Categories` (`id_cat`, `category`) VALUES (1, 'Boissons');
-INSERT IGNORE INTO `P5`.`Categories` (`id_cat`, `category`) VALUES (2, 'Petit déjeuner');
-INSERT IGNORE INTO `P5`.`Categories` (`id_cat`, `category`) VALUES (3, 'Produits laitiers');
+INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (1, 'Sodas au cola');
+INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (2, 'Pâtes à tartiner aux noisettes');
+INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (3, 'Camemberts');
+INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (4, 'Biscottes aux céréales');
+INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (5, 'Bouillons cubes');
 
-CREATE TABLE IF NOT EXISTS `P5`.`Products` (
-  `id_prod` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `cat_id` INT UNSIGNED NOT NULL,
-  `prod_name` VARCHAR(50) CHARACTER SET 'utf8mb4' NOT NULL,
-  `prod_nb` VARCHAR(15) NOT NULL,
-  `prod_stores` VARCHAR(45) CHARACTER SET 'utf8mb4' NULL,
-  `prod_url` VARCHAR(100) NOT NULL,
-  `sub_to` VARCHAR(50) NULL,
-  `true_cat` VARCHAR(45) NOT NULL,
-  `is_sub` SMALLINT(1) UNSIGNED NOT NULL,
-  UNIQUE INDEX `id_prod_UNIQUE` (`id_prod` ASC) VISIBLE,
-  PRIMARY KEY (`id_prod`),
-  UNIQUE INDEX `prod_nb_UNIQUE` (`prod_nb` ASC) VISIBLE,
-  UNIQUE INDEX `prod_name_UNIQUE` (`prod_name` ASC) VISIBLE,
-  UNIQUE INDEX `prod_url_UNIQUE` (`prod_url` ASC) VISIBLE,
-  INDEX `fk_cat_id_idx` (`cat_id` ASC) VISIBLE,
-  CONSTRAINT `fk_cat_id`
-    FOREIGN KEY (`cat_id`)
-    REFERENCES `P5`.`Categories` (`id_cat`)
+CREATE TABLE IF NOT EXISTS `P5`.`Product` (
+  `idProduct` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nameProd` VARCHAR(45) CHARACTER SET 'utf8mb4' NULL,
+  `CatId` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`idProduct`),
+  UNIQUE INDEX `idProduct_UNIQUE` (`idProduct` ASC) INVISIBLE,
+  UNIQUE INDEX `nameProd_UNIQUE` (`nameProd` ASC) VISIBLE,
+  INDEX `fk_CatID_idx` (`CatId` ASC) VISIBLE,
+  CONSTRAINT `fk_CatID`
+    FOREIGN KEY (`CatId`)
+    REFERENCES `P5`.`Category` (`idCategory`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-INSERT INTO `P5`.`Products` (`id_prod`, `cat_id`, `prod_name`, `prod_nb`, `prod_stores`, `prod_url`, `sub_to`, `true_cat`, `is_sub`) VALUES (1, 1, 'Coca cola', '5449000000996', NULL, 'https://fr.openfoodfacts.org/produit/5449000000996', NULL, 'sodas-au-cola', 0);
-INSERT INTO `P5`.`Products` (`id_prod`, `cat_id`, `prod_name`, `prod_nb`, `prod_stores`, `prod_url`, `sub_to`, `true_cat`, `is_sub`) VALUES (2, 1, 'Oasis', '3124480183828', NULL, 'https://fr.openfoodfacts.org/produit/3124480183828', NULL, 'boissons-aux-fruits', 0);
-INSERT INTO `P5`.`Products` (`id_prod`, `cat_id`, `prod_name`, `prod_nb`, `prod_stores`, `prod_url`, `sub_to`, `true_cat`, `is_sub`) VALUES (3, 1, 'Ricard', '3163937010003', NULL, 'https://fr.openfoodfacts.org/produit/3163937010003', NULL, 'pastis', 0);
-INSERT INTO `P5`.`Products` (`id_prod`, `cat_id`, `prod_name`, `prod_nb`, `prod_stores`, `prod_url`, `sub_to`, `true_cat`, `is_sub`) VALUES (4, 2, 'Nutella', '3017620422003', NULL, 'https://fr.openfoodfacts.org/produit/3017620422003', NULL, 'pates-a-tartiner-aux-noisettes-et-au-cacao', 0);
-INSERT INTO `P5`.`Products` (`id_prod`, `cat_id`, `prod_name`, `prod_nb`, `prod_stores`, `prod_url`, `sub_to`, `true_cat`, `is_sub`) VALUES (5, 2, 'Biscottes Heudebert', '3017760363990', NULL, 'https://fr.openfoodfacts.org/produit/3017760363990', NULL, 'biscottes-aux-cereales', 0);
-INSERT INTO `P5`.`Products` (`id_prod`, `cat_id`, `prod_name`, `prod_nb`, `prod_stores`, `prod_url`, `sub_to`, `true_cat`, `is_sub`) VALUES (6, 3, 'Camembert Président', '3228021170039', NULL, 'https://fr.openfoodfacts.org/produit/3228021170039', NULL, 'camemberts', 0);
-INSERT INTO `P5`.`Products` (`id_prod`, `cat_id`, `prod_name`, `prod_nb`, `prod_stores`, `prod_url`, `sub_to`, `true_cat`, `is_sub`) VALUES (7, 3, 'Crème fraîche entière Yoplait', '3329770062771', NULL, 'https://fr.openfoodfacts.org/produit/3329770062771', NULL, 'cremes-entieres', 0);
-
-
-CREATE TABLE IF NOT EXISTS `P5`.`Users` (
-  `id_user` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_name` VARCHAR(45) CHARACTER SET 'utf8mb4' NULL,
-  PRIMARY KEY (`id_user`),
-  UNIQUE INDEX `user_name_UNIQUE` (`user_name` ASC) VISIBLE,
-  UNIQUE INDEX `id_user_UNIQUE` (`id_user` ASC) VISIBLE)
+CREATE TABLE IF NOT EXISTS `P5`.`User` (
+  `idUser` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Username` VARCHAR(45) CHARACTER SET 'utf8mb4' NOT NULL,
+  PRIMARY KEY (`idUser`),
+  UNIQUE INDEX `Username_UNIQUE` (`Username` ASC) VISIBLE)
 ENGINE = InnoDB;
 
-INSERT INTO `P5`.`Users` (`id_user`, `user_name`) VALUES (1, 'all');
-
-CREATE TABLE IF NOT EXISTS `P5`.`Subs` (
-  `id_sub` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `prod_id` INT UNSIGNED NOT NULL,
-  `user_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id_sub`),
-  UNIQUE INDEX `id_sub_UNIQUE` (`id_sub` ASC) VISIBLE,
-  INDEX `fk_user_id_idx` (`user_id` ASC) VISIBLE,
-  INDEX `fk_prod_id_idx` (`prod_id` ASC) VISIBLE,
-  CONSTRAINT `fk_prod_id`
-    FOREIGN KEY (`prod_id`)
-    REFERENCES `P5`.`Products` (`id_prod`)
+CREATE TABLE IF NOT EXISTS `P5`.`ProdDatas` (
+  `idProdDatas` INT NOT NULL AUTO_INCREMENT,
+  `ProdID` INT UNSIGNED NOT NULL,
+  `ProdStore` VARCHAR(45) CHARACTER SET 'utf8mb4' NULL,
+  `ProdUrl` VARCHAR(200) NOT NULL,
+  `ProdScore` FLOAT NOT NULL,
+  `UserID` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`idProdDatas`),
+  UNIQUE INDEX `idProdDatas_UNIQUE` (`idProdDatas` ASC) VISIBLE,
+  UNIQUE INDEX `ProdId_UNIQUE` (`ProdID` ASC) VISIBLE,
+  UNIQUE INDEX `ProdUrl_UNIQUE` (`ProdUrl` ASC) VISIBLE,
+  INDEX `fk_UserID_idx` (`UserID` ASC) VISIBLE,
+  CONSTRAINT `fk_ProdID`
+    FOREIGN KEY (`ProdID`)
+    REFERENCES `P5`.`Product` (`idProduct`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_user_id`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `P5`.`Users` (`id_user`)
+  CONSTRAINT `fk_UserID`
+    FOREIGN KEY (`UserID`)
+    REFERENCES `P5`.`User` (`idUser`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

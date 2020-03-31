@@ -5,6 +5,7 @@ import sys
 sys.path.insert(1, '/..')
 
 from DATAS.data import *
+from API.api_class import Api
 
 
 class Sql():
@@ -95,3 +96,18 @@ class Sql():
                 cursor.execute(query)
             except:
                 pass
+        
+        cursor.execute("USE P5;")
+        cursor.execute("SELECT * FROM Category;")
+        cat_list = []
+        for row in cursor.fetchall():
+            cat_list.append(row[1])
+        for elem in cat_list :
+            print(str(cat_list.index(elem) + 1) + " : " + elem.replace(" ","-"))
+
+        cat_data = Api.request(cat_url, list=prod_true_cat, input=prod_input)
+
+        # Put all products ids from the category in a list
+        for dictionary in cat_data["products"]:
+            dictionary_list.append(dictionary["_id"])
+            

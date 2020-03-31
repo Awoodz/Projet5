@@ -62,7 +62,7 @@ array_columns = ["Nom", "Magasin", "Url", "Substitut de"]
 ############# SQL QUERY #############
 
 # Select all categories
-sql_cat_query = "SELECT DISTINCT category FROM Categories"
+sql_cat_query = "SELECT DISTINCT nameCAT FROM Category"
 
 ############## STR VAR ##############
 
