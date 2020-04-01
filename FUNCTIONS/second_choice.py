@@ -15,14 +15,14 @@ def second_choice(username, cursor, connection):
     saved_list = []
     row_list = []
 
-    cursor.execute(Sql.call_query(username))
+    cursor.execute(sql_call_query, (username,))
 
     # Appending list with datas from database
     for row in cursor.fetchall():
         row_list = []
         index = 0
         # Used while to avoid repetitions
-        while index != 4:
+        while index != 3:
             row_list.append(row[index])
             index = index + 1
         saved_list.append(row_list)

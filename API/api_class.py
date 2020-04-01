@@ -36,75 +36,19 @@ class Api():
         except KeyError:
             pass
 
-    def request(url, list=[], input="", other=0):
+    def request(url, cat, page = 0):
         """This function makes requests to the API"""
-        # Different parameters can be used for this request, two possibilities
-        if other == 0:
-            user_request = requests.get(
-                url + str(list[int(input) - 1]) + ".json"
-            )
-        # Second possibility
-        else:
-            user_request = requests.get(url + str(other) + ".json")
-        return user_request.json()
-
-    def sub_seek(dictionary_list, user_prod):
-        """This function looks for an healthier product in the category.json"""
-        # Sub is going to be reused many times outside the function
-        global sub
-        # Check if, at least, one subsitut was found
-        sub_found = False
-        # For each product id in the list
-        for elem in dictionary_list:
-            # Request product .json
-            prod_data = Api.request(prod_url, other=elem)
-            # Checked product belong to Api class, so we can read its datas
-            check_prod = Api(prod_data)
-            # If no substitut was found
-            if sub_found == False:
-                try:
-                    # Compares checked product and product user selected
-                    if check_prod.score < user_prod.score:
-                        # If checked product is better, it become the substitut
-                        sub = Api(prod_data)
-                        # ...so a substitut was found !
-                        sub_found = True
-                except:
-                    pass
-            # If a substitut was found
-            else:
-                try:
-                    # Compares checked product and subsitut
-                    if check_prod.score < sub.score:
-                        # If checked product is better,
-                        # it become the new substitut
-                        sub = Api(prod_data)
-                except:
-                    pass
-        # If after all products where checked, no substitut was found
-        if sub_found == False:
-            # Means that the product user selected is already the better
-            sub = user_prod
-        return sub
-
-    def answer(substitut, user_prod):
-        """This function displays results to the user"""
-        # Answer if product user selected is already the best
-        if substitut == user_prod:
-            print(healthiest_prod_txt)
-            input(back_to_main_txt)
-        # Answer if a subsitut was found
-        else:
-            # Give its name"
-            print(found_sub_txt + substitut.name)
-            # If stores field was not empty
-            if substitut.store != "":
-                # Give store's name(s) where product is
-                print(found_store_txt + substitut.store)
-            else:
-                # Else, no luck !
-                print(no_store_txt)
-            # Give its url on openfoodfacts.org
-            print(substitut.url)
-            # Credit the API (licence specification)
-            print(license_txt)
+        try:
+            try:
+                if page != 0 :
+                # Different parameters can be used for this request, two possibilities
+                    user_request = requests.get(url + cat + "/" + str(page) + ".json")
+                else:
+                    user_request = requests.get(url + cat + ".json")
+            except TypeError:
+                print("TypeError")
+                pass
+            return user_request.json()
+        except UnboundLocalError:
+            print("UnboundLocalError")
+            pass

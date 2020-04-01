@@ -53,7 +53,8 @@ saved_sub_txt = "Voici vos substituts sauvegardés : "
 ############## LISTS #################
 
 # Columns name for saved substitutes array
-array_columns = ["Nom", "Magasin", "Url", "Substitut de"]
+array_columns = ["Nom", "Magasin", "Url"]
+array_lines = ["1", "2", "3"]
 
 #####################################
 ##### FIRST_CHOICE.PY VARIABLES #####
@@ -62,7 +63,7 @@ array_columns = ["Nom", "Magasin", "Url", "Substitut de"]
 ############# SQL QUERY #############
 
 # Select all categories
-sql_cat_query = "SELECT DISTINCT nameCAT FROM Category"
+sql_cat_query = "SELECT DISTINCT cat_name FROM Categories ORDER BY cat_id;"
 
 ############## STR VAR ##############
 
@@ -139,50 +140,56 @@ db_root = "root"
 ############ SQL QUERY ###########
 
 # Select products that belongs to chosen category
-sql_prod_query1 = (
-    "SELECT prod_name, prod_nb, true_cat FROM Products "
+sql_prod_query = (
+    "SELECT Products.prod_name FROM Products "
     "INNER JOIN Categories "
-    "ON Products.cat_id = Categories.id_cat "
-    "WHERE Categories.id_cat = "
-)
-sql_prod_query2 = " AND is_sub = 0;"
-
-# Add the username in Users table
-sql_query_11 = "INSERT IGNORE INTO Users (user_name) VALUES ('"
-sql_query_12 = "');"
-
-# Insert all the substitute datas in the Products table
-sql_query_2 = (
-    "INSERT IGNORE INTO Products "
-    "(cat_id, prod_name, prod_stores, prod_url, sub_to, prod_nb, is_sub, true_cat) "
-    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
+    "ON Products.prod_cat_id = Categories.cat_id "
+    "WHERE Categories.cat_name = %s "
+    "ORDER BY Products.prod_score DESC "
+    "LIMIT 5;"
 )
 
-# Insert the Products id and Users id in the Subs table
-sql_query_31 = (
-    "INSERT IGNORE INTO Subs (prod_id, user_id) "
-    "SELECT Products.id_prod, Users.id_user "
-    "FROM Products, Users "
-    "WHERE "
-    "Products.prod_name = '"
-)
-sql_query_32 = (
-    "' "
-    "AND "
-    "Users.user_name = '"
-)
-sql_query_33 = (
-    "';"
+sql_prod_score_query = (
+    "SELECT prod_score, prod_cat_id FROM Products "
+    " WHERE prod_name = %s;"
 )
 
-# Select all substitutes (and datas) from a user
-sql_call_query1 = (
-    "SELECT DISTINCT prod_name, prod_stores, prod_url, sub_to FROM Products "
-    "INNER JOIN Subs ON Subs.prod_id = Products.id_prod "
-    "INNER JOIN Users ON Users.id_user = Subs.user_id "
-    "WHERE Users.user_name = '"
+sql_sub_query = (
+    "SELECT prod_name, prod_store, prod_url FROM Products "
+    "WHERE prod_score < %s "
+    "AND prod_cat_id = %s "
+    "ORDER BY Products.prod_score "
+    "LIMIT 3;"
 )
-sql_call_query2 = "';"
+
+sql_user_query = (
+    "INSERT IGNORE INTO Users "
+    "(user_name) "
+    "VALUES (%s);"
+)
+
+sql_user_id_query = (
+    "SELECT user_id FROM Users "
+    "WHERE user_name = %s;"
+)
+
+sql_prod_id_query = (
+    "SELECT prod_id FROM Products "
+    "WHERE prod_name = %s;"
+)
+
+sql_save_query = (
+    "INSERT IGNORE INTO Saved_datas "
+    "(saved_data_user_id, saved_data_prod_id) "
+    "VALUES (%s, %s); "
+)
+
+sql_call_query = (
+    "SELECT DISTINCT prod_name, prod_store, prod_url FROM Products "
+    "INNER JOIN Saved_datas ON Saved_datas.saved_data_prod_id = Products.prod_id "
+    "INNER JOIN Users ON Users.user_id = Saved_datas.saved_data_user_id "
+    "WHERE Users.user_name = %s ;"
+)
 
 ############# STR VAR ############
 

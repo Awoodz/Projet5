@@ -29,3 +29,15 @@ def input_checker(user_input, choice_list):
             print(not_nb_txt)
     # Return checker, if it is True, loop ends
     return checker
+
+def list_builder(cursor, i):
+    ret_list = []
+    for row in cursor.fetchall():
+        row_list = []
+        index = 0
+        # Used while to avoid repetitions
+        while index != i:
+            row_list.append(row[index])
+            index = index + 1
+        ret_list.append(row_list)
+    return ret_list

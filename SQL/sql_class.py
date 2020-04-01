@@ -11,61 +11,11 @@ from API.api_class import Api
 class Sql():
     """This class contains all that concerns API queries"""
 
-    def prod_query(cat_input):
-        """This function call products table on database"""
-        # Select query
-        query = (sql_prod_query1 + cat_input + sql_prod_query2)
-        return query
-
-    def save_query(
-            cat_id, name, store, url,
-            sub_to, nb, true_cat,
-            cursor, connection, username):
-        """This function insert results into saved_data table"""
-
-        # First, we add username in Users table if he doesn't exist
-        query_1 = (sql_query_11 + username + sql_query_12)
-        cursor.execute(query_1)
-        # If name field is empty
-        if name == "":
-            # Tell the user there was no datas
-            name = no_data_txt
-        # If store field is empty
-        if store == "":
-            # Tell the user there was no datas
-            store = no_data_txt
-        # Insert query
-        query_2 = sql_query_2
-        cursor.execute(query_2, (
-            cat_id, name, store,
-            url, sub_to, nb, 1, true_cat
-        ))
-        # Without this, nothing is pushed in table
-        connection.commit()
-        # Last we fill Subs table with our datas
-        query_3 = (
-            sql_query_31
-            + name
-            + sql_query_32
-            + username
-            + sql_query_33
-        )
-        cursor.execute(query_3)
-        # Without this, nothing is pushed in table
-        connection.commit()
-
-    def call_query(username):
-        """This function calls back saved substituts"""
-        # We look for products that are substituts and already searched by user
-        query = (
-            sql_call_query1 +
-            username +
-            sql_call_query2
-        )
-        return query
-
     def database_creation():
         """That function create database"""
+        inserted_prod = 0
+        score_error = 0
+        name_error = 0
         print(no_db_txt)
         # asks for the password of mysql root user
         user_pass = getpass.getpass(password_req_txt)
@@ -96,18 +46,60 @@ class Sql():
                 cursor.execute(query)
             except:
                 pass
-        
         cursor.execute("USE P5;")
-        cursor.execute("SELECT * FROM Category;")
+        cursor.execute("SELECT * FROM Categories ORDER BY cat_id;")
         cat_list = []
+        cat_id_list = []
         for row in cursor.fetchall():
+            cat_id_list.append(row[0])
             cat_list.append(row[1])
-        for elem in cat_list :
-            print(str(cat_list.index(elem) + 1) + " : " + elem.replace(" ","-"))
 
-        cat_data = Api.request(cat_url, list=prod_true_cat, input=prod_input)
-
-        # Put all products ids from the category in a list
-        for dictionary in cat_data["products"]:
-            dictionary_list.append(dictionary["_id"])
+        i = 0
+        while i < len(cat_id_list):
             
+            cat_data = []
+            dictionary_list = []
+            list_accent = [" ", "é", "â", "à"]
+            list_no_acc = ["-", "e", "a", "a"]
+
+            j = 0
+            while j < len(list_accent):
+                new_cat_list = cat_list[i].replace(list_accent[j], list_no_acc[j])
+                j += 1
+                
+            k = 1
+            while k < 5:
+                cat_data = Api.request(cat_url, new_cat_list, k)
+
+                for dictionary in cat_data["products"]:
+                    dictionary_list.append(dictionary["_id"])
+
+                for tags in dictionary_list :
+                    prod_data = Api.request(prod_url, tags, 0)
+                    prod = Api(prod_data)
+                    try :
+                        if prod.name != "":
+                            try :
+                                query = (
+                                    "INSERT IGNORE INTO Products "
+                                    "(prod_cat_id, prod_name, prod_store, prod_url, prod_score) " 
+                                    "VALUES (%s, %s, %s, %s, %s);"
+                                    )
+                                cursor.execute(query, (int(cat_id_list[i]), prod.name, prod.store, prod.url, float(prod.score)))
+                                connection.commit()
+
+                                inserted_prod += 1
+                            
+                            except AttributeError:
+                                score_error += 1
+                        else:
+                            pass
+                    except AttributeError:
+                        name_error += 1
+                        pass
+                k += 1
+            i += 1
+        
+        print(str(score_error) + " produits sans score")
+        print(str(name_error) + " produits sans nom")
+        print(str(inserted_prod) + " produits ajoutés correctement")

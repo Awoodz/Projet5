@@ -1,61 +1,61 @@
 CREATE DATABASE IF NOT EXISTS `P5` DEFAULT CHARACTER SET utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `P5`.`Category` (
-  `idCategory` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `nameCat` VARCHAR(50) CHARACTER SET 'utf8mb4' NOT NULL,
-  PRIMARY KEY (`idCategory`),
-  UNIQUE INDEX `idCategory_UNIQUE` (`idCategory` ASC) VISIBLE,
-  UNIQUE INDEX `nameCat_UNIQUE` (`nameCat` ASC) VISIBLE)
+CREATE TABLE IF NOT EXISTS `P5`.`Categories` (
+  `cat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cat_name` VARCHAR(50) CHARACTER SET 'utf8mb4' NOT NULL,
+  PRIMARY KEY (`cat_id`),
+  UNIQUE INDEX `idCategory_UNIQUE` (`cat_id` ASC) VISIBLE,
+  UNIQUE INDEX `nameCat_UNIQUE` (`cat_name` ASC) VISIBLE)
 ENGINE = InnoDB;
 
-INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (1, 'Sodas au cola');
-INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (2, 'Pâtes à tartiner aux noisettes');
-INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (3, 'Camemberts');
-INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (4, 'Biscottes aux céréales');
-INSERT INTO `P5`.`Category` (`idCategory`, `nameCat`) VALUES (5, 'Bouillons cubes');
+INSERT INTO `P5`.`Categories` (`cat_id`, `cat_name`) VALUES (1, 'Sodas au cola');
+INSERT INTO `P5`.`Categories` (`cat_id`, `cat_name`) VALUES (2, 'Pâtes à tartiner aux noisettes');
+INSERT INTO `P5`.`Categories` (`cat_id`, `cat_name`) VALUES (3, 'Camemberts');
+INSERT INTO `P5`.`Categories` (`cat_id`, `cat_name`) VALUES (4, 'Biscottes aux céréales');
+INSERT INTO `P5`.`Categories` (`cat_id`, `cat_name`) VALUES (5, 'Bouillons cubes');
 
-CREATE TABLE IF NOT EXISTS `P5`.`Product` (
-  `idProduct` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `nameProd` VARCHAR(45) CHARACTER SET 'utf8mb4' NULL,
-  `CatId` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`idProduct`),
-  UNIQUE INDEX `idProduct_UNIQUE` (`idProduct` ASC) INVISIBLE,
-  UNIQUE INDEX `nameProd_UNIQUE` (`nameProd` ASC) VISIBLE,
-  INDEX `fk_CatID_idx` (`CatId` ASC) VISIBLE,
-  CONSTRAINT `fk_CatID`
-    FOREIGN KEY (`CatId`)
-    REFERENCES `P5`.`Category` (`idCategory`)
+CREATE TABLE IF NOT EXISTS `P5`.`Products` (
+  `prod_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `prod_cat_id` INT UNSIGNED NOT NULL,
+  `prod_name` VARCHAR(70) CHARACTER SET 'utf8mb4' NULL,
+  `prod_store` VARCHAR(70) NULL,
+  `prod_url` VARCHAR(150) NOT NULL,
+  `prod_score` FLOAT NOT NULL,
+  PRIMARY KEY (`prod_id`),
+  UNIQUE INDEX `idProduct_UNIQUE` (`prod_id` ASC) INVISIBLE,
+  UNIQUE INDEX `nameProd_UNIQUE` (`prod_name` ASC) VISIBLE,
+  INDEX `fk_CatID_idx` (`prod_cat_id` ASC) VISIBLE,
+  UNIQUE INDEX `prod_url_UNIQUE` (`prod_url` ASC) VISIBLE,
+  CONSTRAINT `fk_cat_id`
+    FOREIGN KEY (`prod_cat_id`)
+    REFERENCES `P5`.`Categories` (`cat_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `P5`.`User` (
-  `idUser` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Username` VARCHAR(45) CHARACTER SET 'utf8mb4' NOT NULL,
-  PRIMARY KEY (`idUser`),
-  UNIQUE INDEX `Username_UNIQUE` (`Username` ASC) VISIBLE)
+CREATE TABLE IF NOT EXISTS `P5`.`Users` (
+  `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_name` VARCHAR(45) CHARACTER SET 'utf8mb4' NOT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE INDEX `Username_UNIQUE` (`user_name` ASC) VISIBLE)
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `P5`.`ProdDatas` (
-  `idProdDatas` INT NOT NULL AUTO_INCREMENT,
-  `ProdID` INT UNSIGNED NOT NULL,
-  `ProdStore` VARCHAR(45) CHARACTER SET 'utf8mb4' NULL,
-  `ProdUrl` VARCHAR(200) NOT NULL,
-  `ProdScore` FLOAT NOT NULL,
-  `UserID` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`idProdDatas`),
-  UNIQUE INDEX `idProdDatas_UNIQUE` (`idProdDatas` ASC) VISIBLE,
-  UNIQUE INDEX `ProdId_UNIQUE` (`ProdID` ASC) VISIBLE,
-  UNIQUE INDEX `ProdUrl_UNIQUE` (`ProdUrl` ASC) VISIBLE,
-  INDEX `fk_UserID_idx` (`UserID` ASC) VISIBLE,
-  CONSTRAINT `fk_ProdID`
-    FOREIGN KEY (`ProdID`)
-    REFERENCES `P5`.`Product` (`idProduct`)
+CREATE TABLE IF NOT EXISTS `P5`.`Saved_datas` (
+  `saved_datas_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `saved_data_user_id` INT UNSIGNED NOT NULL,
+  `saved_data_prod_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`saved_datas_id`),
+  UNIQUE INDEX `idProdDatas_UNIQUE` (`saved_datas_id` ASC) VISIBLE,
+  INDEX `fk_user_id_idx` (`saved_data_user_id` ASC) VISIBLE,
+  INDEX `fk_prod_id_idx` (`saved_data_prod_id` ASC) VISIBLE,
+  CONSTRAINT `fk_user_id`
+    FOREIGN KEY (`saved_data_user_id`)
+    REFERENCES `P5`.`Users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_UserID`
-    FOREIGN KEY (`UserID`)
-    REFERENCES `P5`.`User` (`idUser`)
+  CONSTRAINT `fk_prod_id`
+    FOREIGN KEY (`saved_data_prod_id`)
+    REFERENCES `P5`.`Products` (`prod_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

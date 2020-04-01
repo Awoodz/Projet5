@@ -38,6 +38,9 @@ def __main__():
     username = input(username_req_txt)
     if username == "":
         username = default_username
+    
+    cursor.execute(sql_user_query, (username,))
+    connection.commit()
 
     os.system('cls')
 

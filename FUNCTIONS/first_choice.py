@@ -1,9 +1,10 @@
+import pandas
 import os
 import sys
 sys.path.insert(1, '/..')
-
 from DATAS.data import *
 from FUNCTIONS.helpers import input_checker
+from FUNCTIONS.helpers import list_builder
 from API.api_class import Api
 from SQL.sql_class import Sql
 
@@ -11,13 +12,19 @@ from SQL.sql_class import Sql
 def first_choice(username, cursor, connection):
     """This function contains what is happening if user choose first choice"""
 
+    sub_list = []
+    row_list = []
     cat_list = []
     prod_list = []
     prod_id_list = []
-    prod_true_cat = []
-    dictionary_list = []
+    prod_score = []
+    prod_cat_id = []
+    sub_name = []
+    sub_store = []
+    sub_url = []
     cat_input = ""
     prod_input = ""
+    sub_input = ""
     end_search = False
 
     # Searching categories in database
@@ -29,7 +36,6 @@ def first_choice(username, cursor, connection):
         cat_list.append(row[0])
 
     # Displaying the category list
-    os.system('cls')
     print(cat_list_txt)
     for elem in cat_list:
         print(str(cat_list.index(elem) + 1) + " : " + elem)
@@ -39,93 +45,44 @@ def first_choice(username, cursor, connection):
         cat_input = input(cat_input_txt)
 
     # Searching products affiliated to categories in database
-    cursor.execute(Sql.prod_query(cat_input))
+    cursor.execute(sql_prod_query, ((cat_list[int(cat_input) - 1]),)) 
 
-    # Appending lists with datas from database
     for row in cursor.fetchall():
         prod_list.append(row[0])
-        prod_id_list.append(row[1])
-        prod_true_cat.append(row[2])
 
-    # Displaying the product list
-    os.system('cls')
     print(prod_list_txt)
+
     for elem in prod_list:
         print(str(prod_list.index(elem) + 1) + " : " + elem)
 
-    # User pick a product
     while not input_checker(prod_input, prod_list):
         prod_input = input(prod_input_txt)
 
-    # Remind the user what he picked
-    os.system('cls')
-    picked_prod = str(prod_list[int(prod_input) - 1])
-    print(user_choice_txt + picked_prod)
+    cursor.execute(sql_prod_score_query, ((prod_list[int(prod_input) - 1]),))
 
-    # API Request about picked products
-    user_data = Api.request(prod_url, list=prod_id_list, input=prod_input)
+    prod_score = list_builder(cursor, 2)
+    cursor.execute(sql_sub_query, (prod_score[0][0], prod_score[0][1]))
 
-    # CLASS
-    user_prod = Api(user_data)
+    sub_list = list_builder(cursor, 3)
+    sub_array = pandas.DataFrame(sub_list, columns=array_columns, index=array_lines)
 
-    # API Request about products from same category than picked one
-    cat_data = Api.request(cat_url, list=prod_true_cat, input=prod_input)
+    print(sub_array)
 
-    # Put all products ids from the category in a list
-    for dictionary in cat_data["products"]:
-        dictionary_list.append(dictionary["_id"])
+    while not input_checker(sub_input, sub_list):
+        sub_input = input("Sélection du sub : ")
+    
+    prod_name = sub_list[int(sub_input) - 1][0]
+    print(prod_name)
 
-    # Start the loop, as long as user wants to check
-    # others substitutes for the product he picked
-    while not end_search:
+    cursor.execute(sql_prod_id_query, (prod_name,))
+    prod_id = list_builder(cursor, 1)
+    print(prod_id[0][0])
+    
+    cursor.execute(sql_user_id_query, (username,))
+    user_id = list_builder(cursor, 1)
+    print(user_id[0][0])
 
-        # Searching the healthier substitude, put it in a class
-        sub = Api.sub_seek(dictionary_list, user_prod)
+    cursor.execute(sql_save_query, (int(user_id[0][0]), int(prod_id[0][0])))
+    connection.commit()
 
-        # Displaying informations about the substitute
-        Api.answer(sub, user_prod)
-
-        # If picked product has no substitute (it is the best), end the loop
-        if sub == user_prod:
-            break
-
-        # Displaying possible user's actions (re-search, save, quit)
-        for elem in end_1_choice:
-            print(elem)
-
-        # avoid an endless loop if user wants to re-search
-        end_1_input = ""
-
-        # user makes a choice
-        while not input_checker(end_1_input, end_1_choice):
-            end_1_input = input(init_input_txt)
-
-        # if user wants to re-search, restart the loop
-        if end_1_input == "1":
-            del dictionary_list[dictionary_list.index(sub.code)]
-            sub = user_prod
-            os.system('cls')
-            continue
-        # elif user wants to save, save the substitute datas in database,
-        # then quits
-        elif end_1_input == "2":
-            try:
-                Sql.save_query(
-                    cat_input,
-                    sub.name,
-                    sub.store,
-                    sub.url,
-                    picked_prod,
-                    sub.code,
-                    prod_true_cat[int(prod_input) - 1],
-                    cursor,
-                    connection,
-                    username
-                )
-            except:
-                pass
-            os.system('cls')
-            end_search = True
-        # else quits the program
-        else:
-            end_search = True
+    input("Pressez entrée pour quitter")
