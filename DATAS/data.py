@@ -53,8 +53,8 @@ saved_sub_txt = "Voici vos substituts sauvegardés : "
 ############## LISTS #################
 
 # Columns name for saved substitutes array
-array_columns = ["Nom", "Magasin", "Url"]
-array_lines = ["1", "2", "3"]
+array_columns = ["Nom", "Magasin", "Url", "Description"]
+array_lines = ["1", "2", "3", "4"]
 
 #####################################
 ##### FIRST_CHOICE.PY VARIABLES #####
@@ -82,15 +82,6 @@ prod_url = "https://fr.openfoodfacts.org/api/v0/product/"
 # Typical category url on openfoodfacts.org
 cat_url = "https://fr.openfoodfacts.org/category/"
 
-############### LISTS ###############
-
-# User's final choice list in case "find a substitut"
-end_1_choice = [
-    "1 - Trouver un autre substitut à cet aliment",
-    "2 - Sauvegarder cet aliment",
-    "3 - Retourner au menu principal"
-    ]
-
 ################################
 ##### HELPERS.PY VARIABLES #####
 ################################
@@ -117,17 +108,7 @@ api_salt = "salt_100g"
 api_code = "code"
 api_stores = "stores"
 api_prod_url = "https://fr.openfoodfacts.org/produit/"
-
-############ STR VAR ############
-
-# Selected product is already the best TXT
-healthiest_prod_txt = "Le produit sélectionné est déjà le plus sain !"
-# Found subsitute is : TXT
-found_sub_txt = "Le substitut trouvé est : "
-# Substitute can be found at : TXT
-found_store_txt = "Trouvable chez "
-# No store name in API datas TXT
-no_store_txt = "Malheureusement, aucun magasin n'a été renseigné"
+api_desc = "generic_name_fr"
 
 ##################################
 ##### SQL_CLASS.PY VARIABLES #####
@@ -185,7 +166,7 @@ sql_save_query = (
 )
 
 sql_call_query = (
-    "SELECT DISTINCT prod_name, prod_store, prod_url FROM Products "
+    "SELECT DISTINCT prod_name, prod_store, prod_url, prod_desc FROM Products "
     "INNER JOIN Saved_datas ON Saved_datas.saved_data_prod_id = Products.prod_id "
     "INNER JOIN Users ON Users.user_id = Saved_datas.saved_data_user_id "
     "WHERE Users.user_name = %s ;"

@@ -30,6 +30,8 @@ class Api():
             self.store = prod_data[api_product][api_stores]
             # Product score - determine which one is healthier
             self.score = (self.sugar + self.fat + self.salt) / 3
+            # Product description
+            self.desc = prod_data[api_product][api_desc]
 
         except AttributeError:
             pass

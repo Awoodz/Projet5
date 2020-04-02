@@ -42,8 +42,6 @@ def __main__():
     cursor.execute(sql_user_query, (username,))
     connection.commit()
 
-    os.system('cls')
-
     while choice_input != 3:
         print(main_req_txt)
         # Set/reset choice_input to "" to avoid loop
@@ -59,14 +57,11 @@ def __main__():
         # If user wants to look for a substitute
         if choice_input == "1":
             first_choice(username, cursor, connection)
-            os.system('cls')
         # If user wants to look for his saved substitutes
         elif choice_input == "2":
             second_choice(username, cursor, connection)
-            os.system('cls')
         # If user wants to leave the program
         else:
-            os.system('cls')
             exit()
 
 

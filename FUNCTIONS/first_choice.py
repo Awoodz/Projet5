@@ -25,8 +25,7 @@ def first_choice(username, cursor, connection):
     cat_input = ""
     prod_input = ""
     sub_input = ""
-    end_search = False
-
+    
     # Searching categories in database
     cat_query = (sql_cat_query)
     cursor.execute(cat_query)
@@ -63,7 +62,7 @@ def first_choice(username, cursor, connection):
     prod_score = list_builder(cursor, 2)
     cursor.execute(sql_sub_query, (prod_score[0][0], prod_score[0][1]))
 
-    sub_list = list_builder(cursor, 3)
+    sub_list = list_builder(cursor, 4)
     sub_array = pandas.DataFrame(sub_list, columns=array_columns, index=array_lines)
 
     print(sub_array)

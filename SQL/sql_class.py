@@ -80,12 +80,13 @@ class Sql():
                     try :
                         if prod.name != "":
                             try :
+                                print(prod.desc)
                                 query = (
                                     "INSERT IGNORE INTO Products "
-                                    "(prod_cat_id, prod_name, prod_store, prod_url, prod_score) " 
-                                    "VALUES (%s, %s, %s, %s, %s);"
+                                    "(prod_cat_id, prod_name, prod_store, prod_url, prod_score, prod_desc) " 
+                                    "VALUES (%s, %s, %s, %s, %s, %s);"
                                     )
-                                cursor.execute(query, (int(cat_id_list[i]), prod.name, prod.store, prod.url, float(prod.score)))
+                                cursor.execute(query, (int(cat_id_list[i]), prod.name, prod.store, prod.url, float(prod.score), prod.desc))
                                 connection.commit()
 
                                 inserted_prod += 1
