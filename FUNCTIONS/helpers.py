@@ -1,7 +1,4 @@
-import sys
-sys.path.insert(1, '/..')
-
-from DATAS.data import *
+from datas.data import Dt
 
 
 def input_checker(user_input, choice_list):
@@ -15,7 +12,7 @@ def input_checker(user_input, choice_list):
         # Check if input is not out of range
         if user_input < 1 or user_input > len(choice_list):
             # Warns the user input is out of range
-            print(not_index_txt)
+            print(Dt.not_index_txt)
         # If input is correct, checker become True
         else:
             checker = True
@@ -26,9 +23,10 @@ def input_checker(user_input, choice_list):
             pass
         # If input was a letter, warns the user
         else:
-            print(not_nb_txt)
+            print(Dt.not_nb_txt)
     # Return checker, if it is True, loop ends
     return checker
+
 
 def list_builder(cursor, i):
     """This function build list with datas from MySQL cursor"""

@@ -1,11 +1,7 @@
 import mysql.connector
 import getpass
-
-import sys
-sys.path.insert(1, '/..')
-
-from DATAS.data import *
-from API.api_class import Api
+from datas.data import Dt
+from api.api_class import Api
 
 
 class Sql():
@@ -16,22 +12,23 @@ class Sql():
         inserted_prod = 0
         score_error = 0
         name_error = 0
-        print(no_db_txt)
+        print(Dt.no_db_txt)
         # asks for the password of mysql root user
-        user_pass = getpass.getpass(password_req_txt)
+        user_pass = getpass.getpass(Dt.password_req_txt)
         # connect to mysql as root
+
         connection = mysql.connector.connect(
-            user=db_root,
+            user=Dt.db_root,
             password=user_pass,
-            host=db_host,
-            charset=db_charset,
+            host=Dt.db_host,
+            charset=Dt.db_charset,
             use_unicode=True,
         )
         if connection.is_connected():
             cursor = connection.cursor()
 
         # Read the *.sql file
-        read_file = open("SQL/sqlP5.sql", 'r', encoding='utf8')
+        read_file = open("sql/sqlP5.sql", 'r', encoding='utf8')
         sql_file = read_file.read()
         # Close it
         read_file.close()
@@ -40,17 +37,18 @@ class Sql():
         sql_query = sql_file.split(';')
 
         # for each query in the queries list
-        for query in sql_query:
-            try:
+        try:
+            for query in sql_query:
                 # execute the query
                 cursor.execute(query)
-            except:
-                pass
+        except mysql.connector.errors.ProgrammingError as e:
+            print(e)
+            pass
 
         # Use the new created database
-        cursor.execute(sql_use_db)
+        cursor.execute(Dt.sql_use_db)
         # Searching for categories and their id
-        cursor.execute(sql_creation_query)
+        cursor.execute(Dt.sql_creation_query)
 
         cat_list = []
         cat_id_list = []
@@ -62,40 +60,43 @@ class Sql():
         # For each categories :
         i = 0
         while i < len(cat_id_list):
-            
+
             cat_data = []
             dictionary_list = []
 
             # For each caracters in category name
             j = 0
-            while j < len(list_accent):
+            while j < len(Dt.list_accent):
                 # Replace some characters with others, so we can use it in API
-                new_cat_list = cat_list[i].replace(list_accent[j], list_no_acc[j])
+                new_cat_list = cat_list[i].replace(
+                    Dt.list_accent[j],
+                    Dt.list_no_acc[j]
+                )
                 j += 1
-                
-            # For each page of the category in API    
-            k = cat_page_min
-            while k < cat_page_max:
+
+            # For each page of the category in API
+            k = Dt.cat_page_min
+            while k < Dt.cat_page_max:
                 # Request a page from a category JSON (we will get products ID)
-                cat_data = Api.request(cat_url, new_cat_list, k)
+                cat_data = Api.request(Dt.cat_url, new_cat_list, k)
 
                 # For each dictionary in the list
-                for dictionary in cat_data[api_products]:
+                for dictionary in cat_data[Dt.api_products]:
                     # Append a list with products ID
-                    dictionary_list.append(dictionary[api_id])
+                    dictionary_list.append(dictionary[Dt.api_id])
 
                 # For each product in the dictionary list
-                for product in dictionary_list :
+                for product in dictionary_list:
                     # Request datas from the product JSON page
-                    prod_data = Api.request(prod_url, product, 0)
+                    prod_data = Api.request(Dt.prod_url, product, 0)
                     prod = Api(prod_data)
-                    try :
+                    try:
                         # If product has name and description
                         if prod.name != "" and prod.desc != "":
-                            try :
+                            try:
                                 # Insert product datas in database
                                 cursor.execute(
-                                    sql_insert_query, (
+                                    Dt.sql_insert_query, (
                                         int(cat_id_list[i]),
                                         prod.name,
                                         prod.store,
@@ -108,7 +109,7 @@ class Sql():
 
                                 # Count succefully inserted products
                                 inserted_prod += 1
-                            
+
                             except (AttributeError, TypeError) as e:
                                 print(e)
                                 # Count no score products
@@ -122,7 +123,7 @@ class Sql():
                         pass
                 k += 1
             i += 1
-        
+
         # print results at the end
         print(str(score_error) + " produits sans score")
         print(str(name_error) + " produits sans nom/description")

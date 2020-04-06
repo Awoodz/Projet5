@@ -1,12 +1,6 @@
 import pandas
-import os
-import sys
-
-sys.path.insert(1, '/..')
-
-from DATAS.data import *
-from FUNCTIONS.helpers import input_checker
-from FUNCTIONS.helpers import list_builder
+from datas.data import Dt
+from functions.helpers import list_builder
 
 
 def second_choice(username, cursor, connection):
@@ -14,22 +8,21 @@ def second_choice(username, cursor, connection):
 
     saved_list = []
 
-    cursor.execute(sql_call_query, (username,))
+    cursor.execute(Dt.sql_call_query, (username,))
 
     # Appending list with datas from database
     saved_list = list_builder(cursor, 4)
 
     # If user never saved any substitute
     if saved_list == []:
+        print(Dt.no_user_sub_txt)
 
-        print(no_user_sub_txt)
     # Else, displays the substitute in an array
     else:
-
-        print(saved_sub_txt)
-        sub_array = pandas.DataFrame(saved_list, columns=array_columns)
+        print(Dt.saved_sub_txt)
+        sub_array = pandas.DataFrame(saved_list, columns=Dt.array_columns)
         print(sub_array)
-        print(license_txt)
+        print(Dt.license_txt)
 
     # Press "enter" bring back to main
-    input(back_to_main_txt)
+    input(Dt.back_to_main_txt)

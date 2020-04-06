@@ -1,10 +1,6 @@
 import json
 import requests
-
-import sys
-sys.path.insert(1, '/..')
-
-from DATAS.data import *
+from datas.data import Dt
 
 
 class Api():
@@ -15,35 +11,43 @@ class Api():
         # We "try" because if one of the field doesn't exist, function crash
         try:
             # Product name
-            self.name = prod_data[api_product][api_product_name]
+            self.name = prod_data[Dt.api_prod][Dt.api_product_name]
             # Product sugars for 100g
-            self.sugar = prod_data[api_product][api_nutriments][api_sugars]
+            self.sugar = prod_data[Dt.api_prod][Dt.api_nutri][Dt.api_sugars]
             # Product saturated fat for 100g
-            self.fat = prod_data[api_product][api_nutriments][api_fat]
+            self.fat = prod_data[Dt.api_prod][Dt.api_nutri][Dt.api_fat]
             # Product salt for 100g
-            self.salt = prod_data[api_product][api_nutriments][api_salt]
+            self.salt = prod_data[Dt.api_prod][Dt.api_nutri][Dt.api_salt]
             # Product code
-            self.code = prod_data[api_code]
+            self.code = prod_data[Dt.api_code]
             # Product url on openfoodfacts.org
-            self.url = (api_prod_url + self.code)
+            self.url = (Dt.api_prod_url + self.code)
             # Stores where we can find the product
-            self.store = prod_data[api_product][api_stores]
+            if prod_data[Dt.api_prod][Dt.api_stores] == "":
+                self.store = prod_data[Dt.api_prod][Dt.api_stores]
+            else:
+                self.store = Dt.no_store_txt
             # Product score - determine which one is healthier
             self.score = (self.sugar + self.fat + self.salt) / 3
             # Product description
-            self.desc = prod_data[api_product][api_desc]
+            self.desc = prod_data[Dt.api_prod][Dt.api_desc]
         except (AttributeError, KeyError, TypeError) as e:
             print("Erreur sur " + str(e))
             pass
 
-    def request(url, cat, page = 0):
+    def request(url, cat, page=0):
         """This function makes requests to the API"""
         try:
             try:
-                if page != 0 :
-                # Different parameters can be used for this request, two possibilities
-                    user_request = requests.get(url + cat + "/" + str(page) + ".json")
+                # Different parameters can be used for
+                # this request, two possibilities
+                if page != 0:
+                    # Category request
+                    user_request = requests.get(
+                        url + cat + "/" + str(page) + ".json"
+                    )
                 else:
+                    # Product request
                     user_request = requests.get(url + cat + ".json")
             except TypeError as e:
                 print("TypeError" + str(e))
