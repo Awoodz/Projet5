@@ -8,7 +8,7 @@ from API.api_class import Api
 from SQL.sql_class import Sql
 
 
-def __main__():
+def main():
     """Execute the program"""
 
     connection_checker = False
@@ -43,15 +43,16 @@ def __main__():
     connection.commit()
 
     while choice_input != 3:
-        print(main_req_txt)
+        
         # Set/reset choice_input to "" to avoid loop
         choice_input = ""
         # Displaying choices to user - What he want to do.
-        for elem in init_choice:
-            print(elem)
-
+        
         # User makes a choice
         while not input_checker(choice_input, init_choice):
+            print(main_req_txt)
+            for elem in init_choice:
+                print(elem)
             choice_input = input(init_input_txt)
 
         # If user wants to look for a substitute
@@ -65,4 +66,4 @@ def __main__():
             exit()
 
 
-__main__()
+main()

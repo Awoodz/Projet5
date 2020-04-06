@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `P5`.`Products` (
   `prod_store` VARCHAR(70) NULL,
   `prod_url` VARCHAR(150) NOT NULL,
   `prod_score` FLOAT NOT NULL,
-  `prod_desc` VARCHAR(150) NULL,
+  `prod_desc` VARCHAR(150) NOT NULL,
   PRIMARY KEY (`prod_id`),
   UNIQUE INDEX `idProduct_UNIQUE` (`prod_id` ASC) INVISIBLE,
   UNIQUE INDEX `nameProd_UNIQUE` (`prod_name` ASC) VISIBLE,

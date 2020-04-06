@@ -32,10 +32,8 @@ class Api():
             self.score = (self.sugar + self.fat + self.salt) / 3
             # Product description
             self.desc = prod_data[api_product][api_desc]
-
-        except AttributeError:
-            pass
-        except KeyError:
+        except (AttributeError, KeyError, TypeError) as e:
+            print("Erreur sur " + str(e))
             pass
 
     def request(url, cat, page = 0):
@@ -47,10 +45,10 @@ class Api():
                     user_request = requests.get(url + cat + "/" + str(page) + ".json")
                 else:
                     user_request = requests.get(url + cat + ".json")
-            except TypeError:
-                print("TypeError")
+            except TypeError as e:
+                print("TypeError" + str(e))
                 pass
             return user_request.json()
-        except UnboundLocalError:
-            print("UnboundLocalError")
+        except (UnboundLocalError, json.decoder.JSONDecodeError) as e:
+            print("Erreur JSON" + str(e))
             pass

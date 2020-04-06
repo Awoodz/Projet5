@@ -31,13 +31,18 @@ def input_checker(user_input, choice_list):
     return checker
 
 def list_builder(cursor, i):
+    """This function build list with datas from MySQL cursor"""
     ret_list = []
+    # For each row in cursor
     for row in cursor.fetchall():
+        # Reseting row list for each occurence
         row_list = []
         index = 0
-        # Used while to avoid repetitions
+        # As long as index != i
         while index != i:
+            # Appending the row list
             row_list.append(row[index])
             index = index + 1
+        # Then appending another list with row list
         ret_list.append(row_list)
     return ret_list

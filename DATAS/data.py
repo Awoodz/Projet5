@@ -54,7 +54,7 @@ saved_sub_txt = "Voici vos substituts sauvegardés : "
 
 # Columns name for saved substitutes array
 array_columns = ["Nom", "Magasin", "Url", "Description"]
-array_lines = ["1", "2", "3", "4"]
+array_lines = ["1", "2", "3"]
 
 #####################################
 ##### FIRST_CHOICE.PY VARIABLES #####
@@ -110,6 +110,7 @@ api_stores = "stores"
 api_prod_url = "https://fr.openfoodfacts.org/produit/"
 api_desc = "generic_name_fr"
 
+
 ##################################
 ##### SQL_CLASS.PY VARIABLES #####
 ##################################
@@ -136,9 +137,10 @@ sql_prod_score_query = (
 )
 
 sql_sub_query = (
-    "SELECT prod_name, prod_store, prod_url FROM Products "
+    "SELECT prod_name, prod_store, prod_url, prod_desc FROM Products "
     "WHERE prod_score < %s "
     "AND prod_cat_id = %s "
+    "AND prod_desc IS NOT NULL "
     "ORDER BY Products.prod_score "
     "LIMIT 3;"
 )
@@ -172,7 +174,31 @@ sql_call_query = (
     "WHERE Users.user_name = %s ;"
 )
 
+sql_use_db = ("USE " + db_database +";")
+
+sql_creation_query = ("SELECT * FROM Categories ORDER BY cat_id;")
+
+sql_insert_query = (
+    "INSERT IGNORE INTO Products "
+    "(prod_cat_id, prod_name, prod_store, prod_url, prod_score, prod_desc) " 
+    "VALUES (%s, %s, %s, %s, %s, %s);"
+)
+
 ############# STR VAR ############
+
+# Accent characters list
+list_accent = [" ","À","Á","Â","Ã","Ä","Å","Æ","Ç","È","É","Ê","Ë",
+        "Ì","Í","Î","Ï","Ð","Ñ","Ò","Ó","Ô","Õ","Ö","Ø","Ù","Ú","Û","Ü","Ý",
+        "Þ","ß","à","á","â","ã","ä","å","æ","ç","è","é","ê","ë","ì","í","î",
+        "ï","ð","ñ","ò","ó","ô","õ","ö","ø","ù","ú","û","ü","ý","ý","þ","ÿ"]
+# Equivalent without accent
+list_no_acc = ["-","A","A","A","A","A","A","A","C","E","E","E","E",
+        "I","I","I","I","D","N","O","O","O","O","O","O","U","U","U","U","Y",
+        "b","s","a","a","a","a","a","a","a","c","e","e","e","e","i","i","i",
+        "i","d","n","o","o","o","o","o","o","u","u","u","u","y","y","b","y"]
+
+api_id = "_id"
+api_products = "products"        
 
 # No data about product name/store TXT
 no_data_txt = "Non renseigné"
@@ -180,3 +206,6 @@ no_data_txt = "Non renseigné"
 no_db_txt = "Il semble que la base de donnée n'ait pas été créée"
 # SQL root password request TXT
 password_req_txt = "Saisissez le mot de passe de votre root : "
+
+cat_page_min = 1
+cat_page_max = 5

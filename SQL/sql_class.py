@@ -46,61 +46,84 @@ class Sql():
                 cursor.execute(query)
             except:
                 pass
-        cursor.execute("USE P5;")
-        cursor.execute("SELECT * FROM Categories ORDER BY cat_id;")
+
+        # Use the new created database
+        cursor.execute(sql_use_db)
+        # Searching for categories and their id
+        cursor.execute(sql_creation_query)
+
         cat_list = []
         cat_id_list = []
+        # Appending lists with cursor's results
         for row in cursor.fetchall():
             cat_id_list.append(row[0])
             cat_list.append(row[1])
 
+        # For each categories :
         i = 0
         while i < len(cat_id_list):
             
             cat_data = []
             dictionary_list = []
-            list_accent = [" ", "é", "â", "à"]
-            list_no_acc = ["-", "e", "a", "a"]
 
+            # For each caracters in category name
             j = 0
             while j < len(list_accent):
+                # Replace some characters with others, so we can use it in API
                 new_cat_list = cat_list[i].replace(list_accent[j], list_no_acc[j])
                 j += 1
                 
-            k = 1
-            while k < 5:
+            # For each page of the category in API    
+            k = cat_page_min
+            while k < cat_page_max:
+                # Request a page from a category JSON (we will get products ID)
                 cat_data = Api.request(cat_url, new_cat_list, k)
 
-                for dictionary in cat_data["products"]:
-                    dictionary_list.append(dictionary["_id"])
+                # For each dictionary in the list
+                for dictionary in cat_data[api_products]:
+                    # Append a list with products ID
+                    dictionary_list.append(dictionary[api_id])
 
-                for tags in dictionary_list :
-                    prod_data = Api.request(prod_url, tags, 0)
+                # For each product in the dictionary list
+                for product in dictionary_list :
+                    # Request datas from the product JSON page
+                    prod_data = Api.request(prod_url, product, 0)
                     prod = Api(prod_data)
                     try :
-                        if prod.name != "":
+                        # If product has name and description
+                        if prod.name != "" and prod.desc != "":
                             try :
-                                print(prod.desc)
-                                query = (
-                                    "INSERT IGNORE INTO Products "
-                                    "(prod_cat_id, prod_name, prod_store, prod_url, prod_score, prod_desc) " 
-                                    "VALUES (%s, %s, %s, %s, %s, %s);"
+                                # Insert product datas in database
+                                cursor.execute(
+                                    sql_insert_query, (
+                                        int(cat_id_list[i]),
+                                        prod.name,
+                                        prod.store,
+                                        prod.url,
+                                        float(prod.score),
+                                        prod.desc
                                     )
-                                cursor.execute(query, (int(cat_id_list[i]), prod.name, prod.store, prod.url, float(prod.score), prod.desc))
+                                )
                                 connection.commit()
 
+                                # Count succefully inserted products
                                 inserted_prod += 1
                             
-                            except AttributeError:
+                            except (AttributeError, TypeError) as e:
+                                print(e)
+                                # Count no score products
                                 score_error += 1
                         else:
                             pass
-                    except AttributeError:
+                    except (AttributeError, TypeError) as e:
+                        print(e)
+                        # Count no name/description products
                         name_error += 1
                         pass
                 k += 1
             i += 1
         
+        # print results at the end
         print(str(score_error) + " produits sans score")
-        print(str(name_error) + " produits sans nom")
+        print(str(name_error) + " produits sans nom/description")
         print(str(inserted_prod) + " produits ajoutés correctement")
