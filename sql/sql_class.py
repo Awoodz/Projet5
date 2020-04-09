@@ -1,10 +1,12 @@
-import mysql.connector
 import getpass
-from datas.data import Dt
+
+import mysql.connector
+
 from api.api_class import Api
+from datas.data import Dt
 
 
-class Sql():
+class Sql:
     """This class contains all that concerns API queries"""
 
     def database_creation():
@@ -28,13 +30,13 @@ class Sql():
             cursor = connection.cursor()
 
         # Read the *.sql file
-        read_file = open("sql/sqlP5.sql", 'r', encoding='utf8')
+        read_file = open("sql/sqlP5.sql", "r", encoding="utf8")
         sql_file = read_file.read()
         # Close it
         read_file.close()
         # Split the file at each ";"
         # so we got a list that contains full queries
-        sql_query = sql_file.split(';')
+        sql_query = sql_file.split(";")
 
         # for each query in the queries list
         try:
@@ -68,10 +70,7 @@ class Sql():
             j = 0
             while j < len(Dt.list_accent):
                 # Replace some characters with others, so we can use it in API
-                new_cat_list = cat_list[i].replace(
-                    Dt.list_accent[j],
-                    Dt.list_no_acc[j]
-                )
+                new_cat_list = cat_list[i].replace(Dt.list_accent[j], Dt.list_no_acc[j])
                 j += 1
 
             # For each page of the category in API
@@ -96,14 +95,15 @@ class Sql():
                             try:
                                 # Insert product datas in database
                                 cursor.execute(
-                                    Dt.sql_insert_query, (
+                                    Dt.sql_insert_query,
+                                    (
                                         int(cat_id_list[i]),
                                         prod.name,
                                         prod.store,
                                         prod.url,
                                         float(prod.score),
-                                        prod.desc
-                                    )
+                                        prod.desc,
+                                    ),
                                 )
                                 connection.commit()
 

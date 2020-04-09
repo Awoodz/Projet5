@@ -1,7 +1,7 @@
 import pandas
+
 from datas.data import Dt
-from functions.helpers import input_checker
-from functions.helpers import list_builder
+from functions.helpers import input_checker, list_builder
 
 
 def first_choice(username, cursor, connection):
@@ -62,9 +62,7 @@ def first_choice(username, cursor, connection):
     sub_list = list_builder(cursor, 4)
     # Displaying the substitutes
     sub_array = pandas.DataFrame(
-        sub_list,
-        columns=Dt.array_columns,
-        index=Dt.array_lines
+        sub_list, columns=Dt.array_columns, index=Dt.array_lines
     )
 
     print(sub_array)
@@ -97,12 +95,7 @@ def first_choice(username, cursor, connection):
         user_id = list_builder(cursor, 1)
 
         # Insert ids in Saved_datas table
-        cursor.execute(
-            Dt.sql_save_query, (
-                int(user_id[0][0]),
-                int(prod_id[0][0])
-            )
-        )
+        cursor.execute(Dt.sql_save_query, (int(user_id[0][0]), int(prod_id[0][0])))
         connection.commit()
 
     else:

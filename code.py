@@ -10,7 +10,7 @@ from sql.sql_class import Sql
 def main():
     """Execute the program"""
 
-    sys.path.insert(1, '/..')
+    sys.path.insert(1, "/..")
     connection_checker = False
     while not connection_checker:
         # Connection to SQL database
@@ -21,7 +21,7 @@ def main():
                 user=Dt.db_user,
                 password=Dt.db_password,
                 charset=Dt.db_charset,
-                use_unicode=True
+                use_unicode=True,
             )
             if connection.is_connected():
                 cursor = connection.cursor()

@@ -1,4 +1,4 @@
-class Dt():
+class Dt:
 
     ###################
     ##### COMMONS #####
@@ -38,8 +38,8 @@ class Dt():
     init_choice = [
         "1 - Trouver un substitut à un produit",
         "2 - Retrouver mes aliments substitués",
-        "3 - Quitter l'application"
-        ]
+        "3 - Quitter l'application",
+    ]
 
     ######################################
     ##### SECOND_CHOICE.PY VARIABLES #####
@@ -93,7 +93,6 @@ class Dt():
         "2 - Retourner au menu principal",
     ]
 
-
     ################################
     ##### HELPERS.PY VARIABLES #####
     ################################
@@ -122,7 +121,6 @@ class Dt():
     api_prod_url = "https://fr.openfoodfacts.org/produit/"
     api_desc = "generic_name_fr"
 
-
     ##################################
     ##### SQL_CLASS.PY VARIABLES #####
     ##################################
@@ -144,8 +142,7 @@ class Dt():
     )
 
     sql_prod_sc_query = (
-        "SELECT prod_score, prod_cat_id FROM Products "
-        " WHERE prod_name = %s;"
+        "SELECT prod_score, prod_cat_id FROM Products " " WHERE prod_name = %s;"
     )
 
     sql_sub_query = (
@@ -156,21 +153,11 @@ class Dt():
         "LIMIT 3;"
     )
 
-    sql_user_query = (
-        "INSERT IGNORE INTO Users "
-        "(user_name) "
-        "VALUES (%s);"
-    )
+    sql_user_query = "INSERT IGNORE INTO Users " "(user_name) " "VALUES (%s);"
 
-    sql_user_id_query = (
-        "SELECT user_id FROM Users "
-        "WHERE user_name = %s;"
-    )
+    sql_user_id_query = "SELECT user_id FROM Users " "WHERE user_name = %s;"
 
-    sql_prod_id_query = (
-        "SELECT prod_id FROM Products "
-        "WHERE prod_name = %s;"
-    )
+    sql_prod_id_query = "SELECT prod_id FROM Products " "WHERE prod_name = %s;"
 
     sql_save_query = (
         "INSERT IGNORE INTO Saved_datas "
@@ -185,9 +172,9 @@ class Dt():
         "WHERE Users.user_name = %s ;"
     )
 
-    sql_use_db = ("USE " + db_database + ";")
+    sql_use_db = "USE " + db_database + ";"
 
-    sql_creation_query = ("SELECT * FROM Categories ORDER BY cat_id;")
+    sql_creation_query = "SELECT * FROM Categories ORDER BY cat_id;"
 
     sql_insert_query = (
         "INSERT IGNORE INTO Products "
@@ -199,19 +186,137 @@ class Dt():
 
     # Accent characters list
     list_accent = [
-        " ", "À", "Á", "Â", "Ã", "Ä", "Å", "Æ", "Ç", "È", "É", "Ê", "Ë",
-        "Ì", "Í", "Î", "Ï", "Ð", "Ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "Ø", "Ù",
-        "Ú", "Û", "Ü", "Ý", "Þ", "ß", "à", "á", "â", "ã", "ä", "å", "æ",
-        "ç", "è", "é", "ê", "ë", "ì", "í", "î", "ï", "ð", "ñ", "ò", "ó",
-        "ô", "õ", "ö", "ø", "ù", "ú", "û", "ü", "ý", "ý", "þ", "ÿ"
+        " ",
+        "À",
+        "Á",
+        "Â",
+        "Ã",
+        "Ä",
+        "Å",
+        "Æ",
+        "Ç",
+        "È",
+        "É",
+        "Ê",
+        "Ë",
+        "Ì",
+        "Í",
+        "Î",
+        "Ï",
+        "Ð",
+        "Ñ",
+        "Ò",
+        "Ó",
+        "Ô",
+        "Õ",
+        "Ö",
+        "Ø",
+        "Ù",
+        "Ú",
+        "Û",
+        "Ü",
+        "Ý",
+        "Þ",
+        "ß",
+        "à",
+        "á",
+        "â",
+        "ã",
+        "ä",
+        "å",
+        "æ",
+        "ç",
+        "è",
+        "é",
+        "ê",
+        "ë",
+        "ì",
+        "í",
+        "î",
+        "ï",
+        "ð",
+        "ñ",
+        "ò",
+        "ó",
+        "ô",
+        "õ",
+        "ö",
+        "ø",
+        "ù",
+        "ú",
+        "û",
+        "ü",
+        "ý",
+        "ý",
+        "þ",
+        "ÿ",
     ]
     # Equivalent without accent
     list_no_acc = [
-        "-", "A", "A", "A", "A", "A", "A", "A", "C", "E", "E", "E", "E",
-        "I", "I", "I", "I", "D", "N", "O", "O", "O", "O", "O", "O", "U",
-        "U", "U", "U", "Y", "b", "s", "a", "a", "a", "a", "a", "a", "a",
-        "c", "e", "e", "e", "e", "i", "i", "i", "i", "d", "n", "o", "o",
-        "o", "o", "o", "o", "u", "u", "u", "u", "y", "y", "b", "y"
+        "-",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "A",
+        "C",
+        "E",
+        "E",
+        "E",
+        "E",
+        "I",
+        "I",
+        "I",
+        "I",
+        "D",
+        "N",
+        "O",
+        "O",
+        "O",
+        "O",
+        "O",
+        "O",
+        "U",
+        "U",
+        "U",
+        "U",
+        "Y",
+        "b",
+        "s",
+        "a",
+        "a",
+        "a",
+        "a",
+        "a",
+        "a",
+        "a",
+        "c",
+        "e",
+        "e",
+        "e",
+        "e",
+        "i",
+        "i",
+        "i",
+        "i",
+        "d",
+        "n",
+        "o",
+        "o",
+        "o",
+        "o",
+        "o",
+        "o",
+        "u",
+        "u",
+        "u",
+        "u",
+        "y",
+        "y",
+        "b",
+        "y",
     ]
 
     api_id = "_id"
