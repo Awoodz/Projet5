@@ -34,7 +34,8 @@ def first_choice(username, cursor, connection):
         cat_input = input(Dt.cat_input_txt)
 
     # Searching products affiliated to categories in database
-    cursor.execute(Dt.sql_prod_query, ((cat_list[int(cat_input) - 1]),))
+    cat_name = cat_list[int(cat_input) - 1]
+    cursor.execute(Dt.sql_prod_query, (cat_name,))
 
     # Appending product list with datas from database
     for row in cursor.fetchall():
@@ -51,7 +52,8 @@ def first_choice(username, cursor, connection):
         prod_input = input(Dt.prod_input_txt)
 
     # Getting the chosen product's score and category
-    cursor.execute(Dt.sql_prod_sc_query, ((prod_list[int(prod_input) - 1]),))
+    prod_name = prod_list[int(prod_input) - 1]
+    cursor.execute(Dt.sql_prod_sc_query, (prod_name,))
 
     # Building a list with score and category
     prod_score = list_builder(cursor, 2)
