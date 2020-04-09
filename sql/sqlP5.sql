@@ -64,3 +64,5 @@ ENGINE = InnoDB;
 CREATE USER IF NOT EXISTS 'testeur' IDENTIFIED BY 'openclassrooms';
 
 GRANT ALL ON `P5`.* TO 'testeur';
+
+USE `P5`;

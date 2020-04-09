@@ -45,8 +45,6 @@ class Sql():
             print(e)
             pass
 
-        # Use the new created database
-        cursor.execute(Dt.sql_use_db)
         # Searching for categories and their id
         cursor.execute(Dt.sql_creation_query)
 

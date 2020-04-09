@@ -1,21 +1,25 @@
 class Dt():
 
-    ###################
-    ##### COMMONS #####
-    ###################
+    #########
+    # COMMONS
+    #########
 
-    ##### STR VAR #####
+    # STR VAR
+    #########
 
+    # OpenFoodFacts licence TXT
     license_txt = "Source : OpenFoodFacts.org"
+    # Back to main menu TXT
     back_to_main_txt = "Appuyez sur Entrée pour retourner au menu principal "
     # What do you (user) wan't to do ? TXT
     main_req_txt = "Que voulez vous faire ?"
 
-    #############################
-    ##### CODE.PY VARIABLES #####
-    #############################
+    ###################
+    # CODE.PY VARIABLES
+    ###################
 
-    ######### SQL LOGS ##########
+    # SQL LOGS
+    ##########
 
     db_host = "localhost"
     db_database = "P5"
@@ -23,7 +27,8 @@ class Dt():
     db_password = "openclassrooms"
     db_charset = "utf8mb4"
 
-    ########## STR VAR ##########
+    # STR VAR
+    #########
 
     # Enter a username TXT
     username_req_txt = "Entrez un nom d'utilisateur (facultatif) : "
@@ -32,7 +37,8 @@ class Dt():
     # Make a choice TXT
     init_input_txt = "Faites votre choix : "
 
-    ########### LISTS ###########
+    # LISTS
+    #######
 
     # User's first choice list
     init_choice = [
@@ -41,33 +47,37 @@ class Dt():
         "3 - Quitter l'application"
         ]
 
-    ######################################
-    ##### SECOND_CHOICE.PY VARIABLES #####
-    ######################################
+    ############################
+    # SECOND_CHOICE.PY VARIABLES
+    ############################
 
-    ############## STR VAR ###############
+    # STR VAR
+    #########
 
     # No subsitute saved for user TXT
     no_user_sub_txt = "Aucun substitut sauvegardé pour cet utilisateur"
     # Here is saved substitutes TXT
     saved_sub_txt = "Voici vos substituts sauvegardés : "
 
-    ############## LISTS #################
+    # LISTS
+    #######
 
     # Columns name for saved substitutes array
     array_columns = ["Nom", "Magasin", "Url", "Description"]
     array_lines = ["1", "2", "3"]
 
-    #####################################
-    ##### FIRST_CHOICE.PY VARIABLES #####
-    #####################################
+    ###########################
+    # FIRST_CHOICE.PY VARIABLES
+    ###########################
 
-    ############# SQL QUERY #############
+    # SQL QUERY
+    ###########
 
     # Select all categories
     sql_cat_query = "SELECT DISTINCT cat_name FROM Categories ORDER BY cat_id;"
 
-    ############## STR VAR ##############
+    # STR VAR
+    #########
 
     # Select a category TXT
     cat_input_txt = "Choisissez votre catégorie : "
@@ -86,30 +96,33 @@ class Dt():
     # Choose a substitute to save TXT
     sub_save_txt = "Choisissez un substitut à sauvegarder : "
 
-    ############### LISTS ###############
+    # LISTS
+    #######
 
+    # Choice list (save sub or back to main)
     choice_list = [
         "1 - Sauvegarder un des substituts",
         "2 - Retourner au menu principal",
     ]
 
+    ######################
+    # HELPERS.PY VARIABLES
+    ######################
 
-    ################################
-    ##### HELPERS.PY VARIABLES #####
-    ################################
-
-    ############ STR VAR ###########
+    # STR VAR
+    #########
 
     # Input is not number TXT
     not_nb_txt = "Ce n'est pas un chiffre !"
     # Input is not in index list TXT
     not_index_txt = "Cet index n'existe pas"
 
-    ##################################
-    ##### API_CLASS.PY VARIABLES #####
-    ##################################
+    ########################
+    # API_CLASS.PY VARIABLES
+    ########################
 
-    ############ API TAGS ############
+    # API TAGS
+    ##########
 
     api_prod = "product"
     api_product_name = "product_name_fr"
@@ -122,16 +135,20 @@ class Dt():
     api_prod_url = "https://fr.openfoodfacts.org/produit/"
     api_desc = "generic_name_fr"
 
+    # Empty store field txt
+    no_store_txt = "Non renseigné"
 
-    ##################################
-    ##### SQL_CLASS.PY VARIABLES #####
-    ##################################
+    ########################
+    # SQL_CLASS.PY VARIABLES
+    ########################
 
-    ############ SQL LOGS ############
+    # SQL LOGS
+    ##########
 
     db_root = "root"
 
-    ############ SQL QUERY ###########
+    # SQL QUERY
+    ###########
 
     # Select products that belongs to chosen category
     sql_prod_query = (
@@ -143,11 +160,13 @@ class Dt():
         "LIMIT 5;"
     )
 
+    # Select products score and id with its name
     sql_prod_sc_query = (
         "SELECT prod_score, prod_cat_id FROM Products "
         " WHERE prod_name = %s;"
     )
 
+    # Select substitutes
     sql_sub_query = (
         "SELECT prod_name, prod_store, prod_url, prod_desc FROM Products "
         "WHERE prod_score < %s "
@@ -156,46 +175,55 @@ class Dt():
         "LIMIT 3;"
     )
 
+    # Insert a user in Users table
     sql_user_query = (
         "INSERT IGNORE INTO Users "
         "(user_name) "
         "VALUES (%s);"
     )
 
+    # Select user id with user name
     sql_user_id_query = (
         "SELECT user_id FROM Users "
         "WHERE user_name = %s;"
     )
 
+    # Select prod id with prod name
     sql_prod_id_query = (
         "SELECT prod_id FROM Products "
         "WHERE prod_name = %s;"
     )
 
+    # Insert prod id and user id in Saved_datas table
     sql_save_query = (
         "INSERT IGNORE INTO Saved_datas "
         "(saved_data_user_id, saved_data_prod_id) "
         "VALUES (%s, %s); "
     )
 
+    # Select saved substitutes and their datas
     sql_call_query = (
-        "SELECT DISTINCT prod_name, prod_store, prod_url, prod_desc FROM Products "
-        "INNER JOIN Saved_datas ON Saved_datas.saved_data_prod_id = Products.prod_id "
+        "SELECT DISTINCT prod_name, prod_store, prod_url, prod_desc "
+        "FROM Products "
+        "INNER JOIN Saved_datas "
+        "ON Saved_datas.saved_data_prod_id = Products.prod_id "
         "INNER JOIN Users ON Users.user_id = Saved_datas.saved_data_user_id "
         "WHERE Users.user_name = %s ;"
     )
 
-    sql_use_db = ("USE " + db_database + ";")
-
+    # Select all categories
     sql_creation_query = ("SELECT * FROM Categories ORDER BY cat_id;")
 
+    # Insert products and their datas in Products table
     sql_insert_query = (
         "INSERT IGNORE INTO Products "
-        "(prod_cat_id, prod_name, prod_store, prod_url, prod_score, prod_desc) "
+        "(prod_cat_id, prod_name, prod_store, "
+        "prod_url, prod_score, prod_desc) "
         "VALUES (%s, %s, %s, %s, %s, %s);"
     )
 
-    ############# STR VAR ############
+    # STR VAR
+    #########
 
     # Accent characters list
     list_accent = [
@@ -224,9 +252,10 @@ class Dt():
     # SQL root password request TXT
     password_req_txt = "Saisissez le mot de passe de votre root : "
 
+    # Category JSON page number min
     cat_page_min = 1
+    # Category JSON page number max
     cat_page_max = 5
 
-    no_store_txt = "Non renseigné"
-
+    # SQL script path
     script_sql_path = "sql/sqlP5.sql"
