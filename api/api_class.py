@@ -1,9 +1,11 @@
 import json
+
 import requests
-from datas.data import Dt
+
+from datas import data as Dt
 
 
-class Api():
+class Product:
     """This class contains all that concerns API requests or results"""
 
     def __init__(self, prod_data):
@@ -21,7 +23,7 @@ class Api():
             # Product code
             self.code = prod_data[Dt.api_code]
             # Product url on openfoodfacts.org
-            self.url = (Dt.api_prod_url + self.code)
+            self.url = Dt.api_prod_url + self.code
             # Stores where we can find the product
             if prod_data[Dt.api_prod][Dt.api_stores] == "":
                 self.store = prod_data[Dt.api_prod][Dt.api_stores]
@@ -43,9 +45,7 @@ class Api():
                 # this request, two possibilities
                 if page != 0:
                     # Category request
-                    user_request = requests.get(
-                        url + cat + "/" + str(page) + ".json"
-                    )
+                    user_request = requests.get(url + cat + "/" + str(page) + ".json")
                 else:
                     # Product request
                     user_request = requests.get(url + cat + ".json")

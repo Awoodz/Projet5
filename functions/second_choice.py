@@ -1,5 +1,6 @@
 import pandas
-from datas.data import Dt
+
+from datas import data as Dt
 from functions.helpers import list_builder
 
 

@@ -1,16 +1,18 @@
-import mysql.connector
 import sys
-from datas.data import Dt
+
+import mysql.connector
+
+from datas import data as Dt
 from functions.first_choice import first_choice
-from functions.second_choice import second_choice
 from functions.helpers import input_checker
+from functions.second_choice import second_choice
 from sql.sql_class import Sql
 
 
 def main():
     """Execute the program"""
 
-    sys.path.insert(1, '/..')
+    sys.path.insert(1, "/..")
     connection_checker = False
     while not connection_checker:
         # Connection to SQL database
@@ -21,7 +23,7 @@ def main():
                 user=Dt.db_user,
                 password=Dt.db_password,
                 charset=Dt.db_charset,
-                use_unicode=True
+                use_unicode=True,
             )
             if connection.is_connected():
                 cursor = connection.cursor()
@@ -29,8 +31,6 @@ def main():
         # if fail, the database may not exists, the code will create it
         except mysql.connector.Error:
             Sql.database_creation()
-
-    # os.system('cls')
 
     choice_input = ""
 

@@ -1,4 +1,4 @@
-from datas.data import Dt
+from datas import data as Dt
 
 
 def input_checker(user_input, choice_list):
