@@ -7,7 +7,7 @@ from api.api_class import Product
 
 
 class Sql:
-    """This class contains all that concerns API queries"""
+    """This class contains database creation code"""
 
     def database_creation():
         """That function create database"""
@@ -43,8 +43,8 @@ class Sql:
             for query in sql_query:
                 # execute the query
                 cursor.execute(query)
-        except mysql.connector.errors.ProgrammingError as e:
-            print(e)
+        except mysql.connector.errors.ProgrammingError as error:
+            print(error)
             pass
 
         # Searching for categories and their id
@@ -68,7 +68,10 @@ class Sql:
             j = 0
             while j < len(Dt.list_accent):
                 # Replace some characters with others, so we can use it in API
-                new_cat_list = cat_list[i].replace(Dt.list_accent[j], Dt.list_no_acc[j])
+                new_cat_list = cat_list[i].replace(
+                    Dt.list_accent[j],
+                    Dt.list_no_acc[j]
+                )
                 j += 1
 
             # For each page of the category in API
@@ -108,14 +111,14 @@ class Sql:
                                 # Count succefully inserted products
                                 inserted_prod += 1
 
-                            except (AttributeError, TypeError) as e:
-                                print(e)
+                            except (AttributeError, TypeError) as error:
+                                print(error)
                                 # Count no score products
                                 score_error += 1
                         else:
                             pass
-                    except (AttributeError, TypeError) as e:
-                        print(e)
+                    except (AttributeError, TypeError) as error:
+                        print(error)
                         # Count no name/description products
                         name_error += 1
                         pass

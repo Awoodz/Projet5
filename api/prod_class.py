@@ -33,8 +33,8 @@ class Product:
             self.score = (self.sugar + self.fat + self.salt) / 3
             # Product description
             self.desc = prod_data[Dt.api_prod][Dt.api_desc]
-        except (AttributeError, KeyError, TypeError) as e:
-            print("Erreur sur " + str(e))
+        except (AttributeError, KeyError, TypeError) as error:
+            print("Erreur sur " + str(error))
             pass
 
     def request(url, cat, page=0):
@@ -45,14 +45,16 @@ class Product:
                 # this request, two possibilities
                 if page != 0:
                     # Category request
-                    user_request = requests.get(url + cat + "/" + str(page) + ".json")
+                    user_request = requests.get(
+                        url + cat + "/" + str(page) + ".json"
+                    )
                 else:
                     # Product request
                     user_request = requests.get(url + cat + ".json")
-            except TypeError as e:
-                print("TypeError" + str(e))
+            except TypeError as error:
+                print("TypeError" + str(error))
                 pass
             return user_request.json()
-        except (UnboundLocalError, json.decoder.JSONDecodeError) as e:
-            print("Erreur JSON" + str(e))
+        except (UnboundLocalError, json.decoder.JSONDecodeError) as error:
+            print("Erreur JSON" + str(error))
             pass

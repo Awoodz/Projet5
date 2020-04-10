@@ -99,7 +99,12 @@ def first_choice(username, cursor, connection):
         user_id = list_builder(cursor, 1)
 
         # Insert ids in Saved_datas table
-        cursor.execute(Dt.sql_save_query, (int(user_id[0][0]), int(prod_id[0][0])))
+        cursor.execute(
+            Dt.sql_save_query, (
+                int(user_id[0][0]),
+                int(prod_id[0][0])
+            )
+        )
         connection.commit()
 
     else:
