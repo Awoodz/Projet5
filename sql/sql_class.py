@@ -3,7 +3,7 @@ import mysql.connector
 import getpass
 
 from datas import data as Dt
-from api.api_class import Product
+from api.prod_class import Product
 
 
 class Sql:
