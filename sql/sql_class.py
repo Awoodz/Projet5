@@ -7,23 +7,23 @@ from api.prod_class import Product
 
 
 class Sql:
-    """This class contains database creation code"""
+    """This class contains database creation code."""
 
     def database_creation():
-        """That function create database"""
+        """That function create database."""
         inserted_prod = 0
         score_error = 0
         name_error = 0
-        print(Dt.no_db_txt)
+        print(Dt.NO_DB_TXT)
         # asks for the password of mysql root user
-        user_pass = getpass.getpass(Dt.password_req_txt)
+        user_pass = getpass.getpass(Dt.PASSWORD_REQ_TXT)
         # connect to mysql as root
 
         connection = mysql.connector.connect(
-            user=Dt.db_root,
+            user=Dt.DB_ROOT,
             password=user_pass,
-            host=Dt.db_host,
-            charset=Dt.db_charset,
+            host=Dt.DB_HOST,
+            charset=Dt.DB_CHARSET,
             use_unicode=True,
         )
         if connection.is_connected():
@@ -48,7 +48,7 @@ class Sql:
             pass
 
         # Searching for categories and their id
-        cursor.execute(Dt.sql_creation_query)
+        cursor.execute(Dt.SQL_CREATION_QUERY)
 
         cat_list = []
         cat_id_list = []
@@ -66,29 +66,29 @@ class Sql:
 
             # For each caracters in category name
             j = 0
-            while j < len(Dt.list_accent):
+            while j < len(Dt.LIST_ACCENT):
                 # Replace some characters with others, so we can use it in API
                 new_cat_list = cat_list[i].replace(
-                    Dt.list_accent[j],
-                    Dt.list_no_acc[j]
+                    Dt.LIST_ACCENT[j],
+                    Dt.LIST_NO_ACC[j]
                 )
                 j += 1
 
             # For each page of the category in API
-            k = Dt.cat_page_min
-            while k < Dt.cat_page_max:
+            k = Dt.CAT_PAGE_MIN
+            while k < Dt.CAT_PAGE_MAX:
                 # Request a page from a category JSON (we will get products ID)
-                cat_data = Product.request(Dt.cat_url, new_cat_list, k)
+                cat_data = Product.request(Dt.CAT_URL, new_cat_list, k)
 
                 # For each dictionary in the list
-                for dictionary in cat_data[Dt.api_products]:
+                for dictionary in cat_data[Dt.API_PRODUCTS]:
                     # Append a list with products ID
-                    dictionary_list.append(dictionary[Dt.api_id])
+                    dictionary_list.append(dictionary[Dt.API_ID])
 
                 # For each product in the dictionary list
                 for product in dictionary_list:
                     # Request datas from the product JSON page
-                    prod_data = Product.request(Dt.prod_url, product, 0)
+                    prod_data = Product.request(Dt.PROD_URL, product, 0)
                     prod = Product(prod_data)
                     try:
                         # If product has name and description
@@ -96,7 +96,7 @@ class Sql:
                             try:
                                 # Insert product datas in database
                                 cursor.execute(
-                                    Dt.sql_insert_query,
+                                    Dt.SQL_INSERT_QUERY,
                                     (
                                         int(cat_id_list[i]),
                                         prod.name,

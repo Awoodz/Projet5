@@ -5,25 +5,26 @@ from functions.helpers import list_builder
 
 
 def second_choice(username, cursor, connection):
-    """This function contains what is happening if user choose second choice"""
+    """This function contains what is happening"""
+    """if user choose second choice."""
 
     saved_list = []
 
-    cursor.execute(Dt.sql_call_query, (username,))
+    cursor.execute(Dt.SQL_CALL_QUERY, (username,))
 
     # Appending list with datas from database
     saved_list = list_builder(cursor, 4)
 
     # If user never saved any substitute
     if saved_list == []:
-        print(Dt.no_user_sub_txt)
+        print(Dt.NO_USER_SUB_TXT)
 
     # Else, displays the substitute in an array
     else:
-        print(Dt.saved_sub_txt)
-        sub_array = pandas.DataFrame(saved_list, columns=Dt.array_columns)
+        print(Dt.SAVED_SUB_TXT)
+        sub_array = pandas.DataFrame(saved_list, columns=Dt.ARRAY_COLUMNS)
         print(sub_array)
-        print(Dt.license_txt)
+        print(Dt.LICENCE_TXT)
 
     # Press "enter" bring back to main
-    input(Dt.back_to_main_txt)
+    input(Dt.BACK_TO_MAIN_TXT)

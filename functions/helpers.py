@@ -2,7 +2,7 @@ from datas import data as Dt
 
 
 def input_checker(user_input, choice_list):
-    """ That function checks if the user entered a correct input """
+    """ That function checks if the user entered a correct input. """
     # This variable ends the "while" loop if it is True
     checker = False
     # We "try" to avoid crash if user enters a letter
@@ -12,7 +12,7 @@ def input_checker(user_input, choice_list):
         # Check if input is not out of range
         if user_input < 1 or user_input > len(choice_list):
             # Warns the user input is out of range
-            print(Dt.not_index_txt)
+            print(Dt.NOT_INDEX_TXT)
         # If input is correct, checker become True
         else:
             checker = True
@@ -23,13 +23,13 @@ def input_checker(user_input, choice_list):
             pass
         # If input was a letter, warns the user
         else:
-            print(Dt.not_nb_txt)
+            print(Dt.NOT_NB_TXT)
     # Return checker, if it is True, loop ends
     return checker
 
 
 def list_builder(cursor, i):
-    """This function build list with datas from MySQL cursor"""
+    """This function build list with datas from MySQL cursor."""
     ret_list = []
     # For each row in cursor
     for row in cursor.fetchall():
